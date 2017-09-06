@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="adjust_wh_islr_doc_form">
+            <field name="name">adjust.wh.islr.doc.form</field>
+            <field name="model">adjust.wh.islr.doc</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Adjust withholding concept">
+                    <group height="400" width="800">
+                        <field name="invoice_id" colspan="4"/>
+                        <field name="line_ids" colspan="4" nolabel="1">
+                            <tree string="Whihholding lines" editable="bottom">
+                                <field name="invoice_line_id" invisible="1"/>
+                                <field name="name"/>
+                                <field name="concept_id"/>
+                                <field name="amount"/>
+                                <field name="new_concept_id"/>
+                            </tree>
+                            <form>
+                                <field name="invoice_line_id" invisible="1"/>
+                                <field name="name"/>
+                                <field name="concept_id"/>
+                                <field name="amount"/>
+                                <field name="new_concept_id"/>
+                            </form>
+                        </field>
+                        <separator string="Are you sure you want to do this?" colspan="4" />
+                        <field name="sure" />
+                        <button name="adjust_wh_concep" string="Confirm" type="object" icon="terp-check" />    
+                        <button special='cancel' string="Cancel" icon="terp-gtk-stop" />
+                    </group>
+                </form>
+            </field>            
+        </record>
+    </data>
+</openerp>

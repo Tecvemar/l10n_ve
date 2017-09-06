@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+'security/ir_rule.xml',
+ -->
+
+<openerp>
+    <data>
+
+        <record model="ir.rule" id="fiscal_summary_comp_rule">
+            <field name="name">fiscal_summary company rule</field>
+            <field name="model_id" ref="model_fiscal_summary"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
+        </record>
+
+        <record model="ir.rule" id="fiscal_book_comp_rule">
+            <field name="name">fiscal_book company rule</field>
+            <field name="model_id" ref="model_fiscal_book"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
+        </record>
+
+    </data>
+</openerp>

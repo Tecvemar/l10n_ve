@@ -1,0 +1,199 @@
+<?xml version="1.0"?>
+<document filename="Withholdinf ISLR.pdf">
+
+  <template pageSize="(11in,8.5in)" title="Withholdinf ISLR" author="Juan Márquez" allowSplitting="20" showBoundary="0">
+    <pageTemplate id="first">
+      <frame id="first" x1="10mm" y1="23mm" width="259mm" height="134mm"/>
+        <pageGraphics>
+          <!--  y + heigth = 265 -->
+          <place x="10mm" y="155mm" width="259mm" height="45mm">
+          <blockTable colWidths="167mm,27mm,23mm,42mm" style="TABLA_HEADER2">
+            <tr>
+              <td> <para style="TITLE2"><b>COMPROBANTE DE RETENCIÓN DE IMPUESTO SOBRE LA RENTA</b></para> </td>
+              <td> <para style="CELL_LABEL">Fecha:</para>
+                   <para style="TITLE3C"><b>[[formatLang(o.date_uid,date=True) ]]</b></para> </td>
+              <td> <para style="CELL_LABEL">Período Fiscal:</para>
+                   <para style="TITLE3C"><b>[[ get_period(o.period_id) or '' ]]</b></para> </td>
+              <td> <para style="CELL_LABEL">Número comprobante:</para>
+                   <para style="TITLE3C"><b>[[ o.number ]]</b></para> </td>
+            </tr>
+          </blockTable>
+          <spacer length="2mm" />
+          <blockTable colWidths="129.5mm,129.5mm" style="TABLA_HEADER2">
+            <tr>
+              <td> <para style="TITLE3C"><b>Agente de Retención</b></para> </td>
+              <td> <para style="TITLE3C"><b>Datos del Beneficiario</b></para> </td>
+            </tr>
+          </blockTable>
+          <spacer length="0.2mm" />
+          <blockTable colWidths="102mm,27.5mm,102mm,27.5mm" style="TABLA_FOOTER">
+            <tr>
+              <td> <para style="CELL_LABEL">Nombre o razón social:</para>
+                   <para style="IZQUIERDAN">[[ (o.company_id.partner_id and o.company_id.partner_id.name) or '' ]]</para> </td>
+              <td> <para style="CELL_LABEL">RIF:</para>
+                   <para style="CENTRON">[[ (o.company_id.partner_id and o.company_id.partner_id.str_rif) or '' ]]</para> </td>
+              <td> <para style="CELL_LABEL">Nombre o razón social:</para>
+                   <para style="IZQUIERDAN">[[ (o.partner_id and o.partner_id.name) or '' ]]</para> </td>
+              <td> <para style="CELL_LABEL">RIF:</para>
+                   <para style="CENTRON">[[ (o.partner_id and o.partner_id.str_rif) or '' ]]</para> </td>
+            </tr>
+          </blockTable>
+          <blockTable colWidths="129.5mm,129.5mm" style="TABLA_FOOTER">
+            <tr>
+              <td> <para style="CELL_LABEL">Dirección fiscal:</para>
+                   <para style="IZQUIERDAN">[[ get_address(o.company_id.partner_id.address) or '' ]]</para> </td>
+              <td> <para style="CELL_LABEL">Dirección fiscal:</para>
+                   <para style="IZQUIERDAN">[[ get_address(o.partner_id.address) or '' ]]</para> </td>
+            </tr>
+          </blockTable>
+          </place>
+          <place x="10mm" y="10mm" width="259mm" height="8mm">
+            <blockTable colWidths="259mm" style="TABLA_SINBORDE">
+              <tr>
+                <td>
+                  <para style="CENTRO">Según el Artículo Nº 24 del Decreto Nº 1.808 publicado en la Gaceta Oficial de la República de Venezuela No. 36.203 del 12/05/1997</para>
+                </td>
+              </tr>
+            </blockTable>
+          </place>
+          <setFont name="Helvetica" size="7.0"/>
+          <drawCentredString x="139mm" y="8mm">Página <pageNumber/></drawCentredString>
+      </pageGraphics>
+    </pageTemplate>
+  </template>
+
+  <stylesheet>
+    <blockTableStyle id="TABLA_HEADER2">
+      <blockAlignment value="LEFT" />
+      <blockValign value="TOP" />
+      <lineStyle kind="GRID" colorName="#000000" start="0,0" stop="-1,-1" />
+      <blockBackground kind="GRID" colorName="khaki" start="0,0" stop="-1,-1" />
+    </blockTableStyle>
+    <blockTableStyle id="TABLA_HEADER">
+      <lineStyle kind="GRID" colorName="#000000" start="0,0" stop="-1,-1" />
+      <blockBackground kind="GRID" colorName="khaki" start="0,0" stop="-1,-1" />
+      <blockSpan start="1,0" stop="2,0" />
+      <blockSpan start="0,1" stop="1,1" />
+      <blockSpan start="2,1" stop="-1,1" />
+      <blockSpan start="0,-1" stop="-1,-1" />
+      <blockValign value="CENTER" />
+    </blockTableStyle>
+    <blockTableStyle id="TABLA_BODY">
+      <blockAlignment value="LEFT" />
+      <blockValign value="CENTER" />
+      <blockLeftPadding length="0.8mm"/>
+      <blockRightPadding length="0.8mm"/>
+      <lineStyle kind="GRID" colorName="darkgrey" start="0,0" stop="-1,-1" />
+      <blockBackground kind="GRID" colorName="white" start="0,0" stop="-1,-1" />
+    </blockTableStyle>
+    <blockTableStyle id="TABLA_TOTAL">
+      <blockAlignment value="LEFT" />
+      <blockValign value="CENTER" />
+      <blockLeftPadding length="0.8mm"/>
+      <blockRightPadding length="0.8mm"/>
+      <lineStyle kind="GRID" colorName="darkgrey" start="1,0" stop="-1,-1" />
+      <blockBackground kind="GRID" colorName="white" start="0,0" stop="-1,-1" />
+    </blockTableStyle>
+    <blockTableStyle id="TABLA_FOOTER">
+      <blockAlignment value="LEFT" />
+      <blockValign value="TOP" />
+      <lineStyle kind="GRID" colorName="darkgrey" start="0,0" stop="-1,-1" />
+      <blockBackground kind="GRID" colorName="white" start="0,0" stop="-1,-1" />
+    </blockTableStyle>
+    <blockTableStyle id="TABLA_SINBORDE">
+      <blockAlignment value="LEFT" />
+      <blockValign value="TOP" />
+      <lineStyle kind="GRID" colorName="white" start="0,0" stop="-1,-1" />
+      <blockBackground kind="GRID" colorName="white" start="0,0" stop="-1,-1" />
+    </blockTableStyle>
+    <blockTableStyle id="TITLE">
+      <lineStyle kind="GRID" colorName="black" start="0,0" stop="-1,-1" thickness="0.5" />
+      <blockValign value="TOP" />
+    </blockTableStyle>
+    <initialize>
+      <paraStyle name="all" alignment="justify" />
+    </initialize>
+    <paraStyle name="DERECHA" alignment="RIGHT" fontName="Helvetica" fontSize="8.0" leading="9" spaceBefore="0" textColor="black" />
+    <paraStyle name="IZQUIERDA" alignment="LEFT" fontName="Helvetica" fontSize="8.0" leading="9" spaceBefore="0" textColor="black" />
+    <paraStyle name="CENTRO" alignment="CENTER" fontName="Helvetica" fontSize="8.0" leading="8" spaceBefore="0" textColor="black" />
+    <paraStyle name="DERECHAN" alignment="RIGHT" fontName="Helvetica-Bold" fontSize="8.0" leading="9" spaceBefore="0" textColor="black" />
+    <paraStyle name="IZQUIERDAN" alignment="LEFT" fontName="Helvetica-Bold" fontSize="8.0" leading="9" spaceBefore="0" textColor="black" />
+    <paraStyle name="CENTRON" alignment="CENTER" fontName="Helvetica-Bold" fontSize="8.0" leading="8" spaceBefore="0" textColor="black" />
+    <paraStyle name="CENTRO7N" alignment="CENTER" fontName="Helvetica-Bold" fontSize="7.0" leading="7" spaceBefore="0" textColor="black" />
+    <paraStyle name="CENTRO7" alignment="CENTER" fontName="Helvetica" fontSize="7.0" leading="7" spaceBefore="0" textColor="black" />
+    <paraStyle name="IZQUIERDA7" alignment="LEFT" fontName="Helvetica" fontSize="7.0" leading="7" spaceBefore="0" textColor="black" />
+    <paraStyle name="LEFT7" alignment="LEFT" fontName="Helvetica" fontSize="7.0" leading="7" spaceBefore="0" textColor="black" />
+    <paraStyle name="CELL_LABEL" alignment="LEFT" fontName="Helvetica" fontSize="7.0" leading="8" spaceBefore="0" textColor="black" />
+    <paraStyle name="RIGHT7" alignment="RIGHT" fontName="Helvetica" fontSize="7.0" leading="7" spaceBefore="0" textColor="black" />
+    <paraStyle name="RIGHT7N" alignment="RIGHT" fontName="Helvetica-Bold" fontSize="7.0" leading="7" spaceBefore="0" textColor="black" />
+    <paraStyle name="TITLE" alignment="CENTER" fontName="Helvetica" fontSize="20.0" leading="20" spaceBefore="0" textColor="black" />
+    <paraStyle name="TITLE2" alignment="LEFT" fontName="Helvetica" fontSize="12.0" leading="15" spaceBefore="0" textColor="black" />
+    <paraStyle name="TITLE2R" alignment="RIGHT" fontName="Helvetica" fontSize="12.0" leading="15" spaceBefore="0" textColor="black" />
+    <paraStyle name="TITLE2C" alignment="CENTER" fontName="Helvetica" fontSize="12.0" leading="15" spaceBefore="0" textColor="black" />
+    <paraStyle name="TITLE3" alignment="LEFT" fontName="Helvetica" fontSize="10.0" leading="10" spaceBefore="0" textColor="black" />
+    <paraStyle name="TITLE3C" alignment="CENTER" fontName="Helvetica" fontSize="10.0" leading="10" spaceBefore="0" textColor="black" />
+    <paraStyle name="TITLE3R" alignment="RIGHT" fontName="Helvetica" fontSize="10.0" leading="10" spaceBefore="0" textColor="black" />
+    <paraStyle name="TITLE4" alignment="LEFT" fontName="Helvetica" fontSize="20.0" leading="20" spaceBefore="0" textColor="black" />
+    <paraStyle name="TITLE5" alignment="LEFT" fontName="Helvetica" fontSize="15.0" leading="15" spaceBefore="0" textColor="black" />
+    <paraStyle name="TITLE6" alignment="LEFT" fontName="Helvetica" fontSize="9.0" leading="9" spaceBefore="0" textColor="black" />
+    <paraStyle name="TITLE6R" alignment="RIGHT" fontName="Helvetica" fontSize="9.0" leading="9" spaceBefore="0" textColor="black" />
+  </stylesheet>
+
+  <story>
+      <para style="IZQUIERDA">[[repeatIn(objects,'o')]]</para>
+      <section>
+        <blockTable colWidths="19mm,21mm,21mm,11mm,91mm,22mm,11mm,21mm,20mm,22mm" style="TABLA_BODY" repeatRows="1">
+          <tr>
+            <td><para style="CENTRO7N">Fecha Factura</para></td>
+            <td><para style="CENTRO7N">Nº de Factura</para></td>
+            <td><para style="CENTRO7N">Nº Control</para></td>
+            <td><para style="CENTRO7N">Tipo Doc</para></td>
+            <td><para style="CENTRO7N">Concepto</para></td>
+            <td><para style="CENTRO7N">Monto Sujeto</para></td>
+            <td><para style="CENTRO7N">% Ret.</para></td>
+            <td><para style="CENTRO7N">Monto base retención</para></td>
+            <td><para style="CENTRO7N">Monto Sustraendo</para></td>
+            <td><para style="CENTRO7N">ISLR Retenido</para></td>
+          </tr>
+          <tr>[[ repeatIn(o.concept_ids,'c')]]
+            <td><para style="CENTRO7">[[ formatLang(c.invoice_id.date_document,date='True') ]]</para></td>
+            <td><para style="CENTRO7">[[ c.invoice_id.supplier_invoice_number ]]</para></td>
+            <td><para style="CENTRO7">[[ c.invoice_id.nro_ctrl ]]</para></td>
+            <td>
+                <para style="CENTRO7">[[ c.invoice_id.type and c.invoice_id.type=='in_refund' and 'N.C.' or removeParentNode('para') ]]</para>
+                <para style="CENTRO7">[[ (c.invoice_id.type=='in_invoice' and (c.invoice_id.parent_id and 'N.D.' or removeParentNode('para')) or removeParentNode('para'))]]</para>
+                <para style="CENTRO7">[[(c.invoice_id.type=='in_invoice' and ((not c.invoice_id.parent_id) and 'Fct' or removeParentNode('para'))  or removeParentNode('para')) ]]</para>
+            </td>
+            <td><para style="IZQUIERDA7">[[ c.islr_rates_id.concept_id.name ]] ([[ c.islr_rates_id.code ]])</para></td>
+            <td><para style="RIGHT7">[[ formatLang(c.base_amount, digits=2) ]]</para></td>
+            <td><para style="RIGHT7">[[ formatLang(c.retencion_islr, digits=1) ]]%</para></td>
+            <td><para style="RIGHT7">[[ formatLang(c.base_amount*c.retencion_islr/100, digits=2) ]]</para></td>
+            <td><para style="RIGHT7">[[ formatLang(c.subtract, digits=2) or 'N/A' ]]</para></td>
+            <td><para style="RIGHT7">[[ formatLang(c.amount, digits=2) ]]</para></td>
+          </tr>
+        </blockTable>
+      </section>
+      <blockTable colWidths="163mm,74mm,22mm" style="TABLA_TOTAL">
+        <tr>
+            <td><para style="RIGHT7N"><font color="white"></font></para></td>
+            <td><para style="RIGHT7N">TOTAL IMPUESTO RETENIDO</para></td>
+            <td><para style="RIGHT7N">[[ o.amount_total_ret and formatLang(o.amount_total_ret, digits=2) or '']]</para></td>
+        </tr>
+      </blockTable>
+      <spacer length="15mm"/>
+      <blockTable colWidths="129.5mm,129.5mm" style="TABLA_SINBORDE">
+        <tr>
+            <td>
+                <para style="CENTRO7">_____________________________________________</para>
+                <para style="CENTRO7">[[ o.company_id.partner_id.name ]]</para>
+                <para style="CENTRO7">Firma y Sello</para>
+            </td>
+             <td>
+                <para style="CENTRO7">_____________________________________________</para>
+                <para style="CENTRO7">[[ o.partner_id.name ]]</para>
+                <para style="CENTRO7">Firma y Sello</para>
+            </td>
+        </tr>
+    </blockTable>
+  </story>
+</document>

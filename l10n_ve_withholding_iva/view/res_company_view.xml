@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<openerp>
+    <data>
+        <record id="res_company_wh_iva" model="ir.ui.view">
+            <field name="name">res.company.wh.iva</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.res.company.form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@string='Configuration']" position="after">
+                    <separator string="Withholdings" colspan="4"/>
+                    <field name="wh_consolidate"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

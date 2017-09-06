@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="view_product_product_islr">
+            <field name="name">product.product.form.islr</field>
+            <field name="model">product.product</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/notebook/page/group[@name='properties']" position="after">
+                    <newline/>
+                    <separator string="Concept of Withholding Income"/>
+                    <newline/>
+                    <group col='6' colspan='6' >
+                        <field name="concept_id"/>
+                    </group>
+                    <newline/>
+                </xpath>
+            </field>
+        </record>
+
+
+	<!-- 
+	=====================================================
+	Products Extension
+	=====================================================
+	-->  
+
+        <record id="product_normal_form_view_type" model="ir.ui.view">
+            <field name="name">product.normal.form.type</field>
+            <field name="model">product.product</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/notebook/page/group/field[@name='type']" position="replace">
+                    <field name="type" on_change="onchange_product_type(type)"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="product_template_form_view_type" model="ir.ui.view">
+            <field name="name">product.template.product.form.type</field>
+            <field name="model">product.template</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/notebook/page/group/field[@name='type']" position="replace">
+                    <field name="type" on_change="onchange_product_type(type)"/>
+                </xpath>
+            </field>
+        </record>
+        
+    </data>
+</openerp>

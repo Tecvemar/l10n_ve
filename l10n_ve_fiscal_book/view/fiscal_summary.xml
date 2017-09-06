@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+<!--
+'view/fiscal_summary.xml',
+ -->
+
+        <record model="ir.ui.view" id="view_fiscal_summary_search">
+            <field name="name">fiscal.summary.search</field>
+            <field name="model">fiscal.summary</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="">
+                    <group>
+                        <filter string="State" icon="gtk-ok" domain="[]" context="{'group_by':'state'}"/>
+                    </group>
+                    <field name="date"/>
+                    <field name="period_id"/>
+                    <field name="number"/>
+                </search>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="view_fiscal_summary_tree">
+            <field name="name">fiscal.summary.tree</field>
+            <field name="model">fiscal.summary</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Fiscal Book Summary" colors="red:state == 'draft';gray:state == 'cancel'">
+                    <field name="period_id"/>
+                    <field name="date"/>
+                    <field name="number"/>
+                    <field name="certificate"/>
+                    <field name="fb_purchase_id"/>
+                    <field name="fb_sale_id"/>
+                    <field name="state" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="view_fiscal_summary_form">
+            <field name="name">fiscal.summary.form</field>
+            <field name="model">fiscal.summary</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Fiscal Book Summary">
+                    <group col="8" colspan="4">
+                        <field name="company_id" colspan="4"/>
+                        <field name="period_id" on_change="on_change_period_id(period_id)"/>
+                        <field name="date"/>
+                    </group>
+                    <field name="number"/>
+                    <field name="certificate"/>
+                    <field name="fb_purchase_id" context="{'type': 'purchase', 'form_view_ref':'l10n_ve_fiscal_book.view_fiscal_purchase_book_form'}" domain="[('type','=','purchase')]"/>
+                    <field name="fb_sale_id" context="{'type': 'sale', 'form_view_ref':'l10n_ve_fiscal_book.view_fiscal_sale_book_form'}" domain="[('type','=','sale')]"/>
+                    <notebook colspan="4">
+                        <page string="General">
+                            <field name="line_ids" colspan="4" nolabel="1">
+                                <tree string="Summary lines" editable="bottom" colors="darkblue:type == 'view';darkgreen:type == 'total';darkgrey:type == 'last'">
+                                    <field name="sequence" invisible="1"/>
+                                    <field name="name"/>
+                                    <field name="type" invisible="1"/>
+                                    <field name="amount_base" sum="Base" attrs="{'readonly':[('type','!=','value')]}"/>
+                                    <field name="amount_tax" sum="Tax" attrs="{'readonly':[('type','!=','value')]}"/>
+                                </tree>
+                                <form>
+                                    <field name="amount_base" invisible="0" attrs="{'readonly':[('type','!=','value')]}"/>
+                                    <field name="amount_tax" attrs="{'readonly':[('type','!=','value')]}"/>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Other">
+                            <field name="prior_summary_id" widget="selection"/>
+                            <field name="move_id"/>
+                            <separator string="Notes" colspan="4"/>
+                            <field name="narration" colspan="4" nolabel="1"/>
+                        </page>
+                    </notebook>
+                    <group col="8" colspan="4">
+                    <field name="state"/>
+                        <group col="8" colspan="6">
+                            <button name="button_load" string="Load" icon="terp-accessories-archiver+"
+                                    type="object" colspan="1" states="draft"/>
+                            <button name="button_compute" string="Compute" icon="terp-hr"
+                                    type="object" colspan="1" states="draft"/>
+                            <button name="button_done" icon="gtk-ok" string="Done" states="draft"/>
+                            <button name="button_cancel" icon="gtk-cancel" string="Cancel" states="draft,done"/>
+                            <button name="button_draft" icon="terp-stock_effects-object-colorize" string="Reset to draft" states="cancel"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="action_fiscal_summary" model="ir.actions.act_window">
+            <field name="name">Fiscal Book Summary</field>
+            <field name="res_model">fiscal.summary</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_fiscal_summary_tree"/>
+            <field name="search_view_id" ref="view_fiscal_summary_search"/>
+        </record>
+
+        <menuitem
+            id="menu_action_fiscal_summary"
+            parent="menu_fr_main"
+            action="action_fiscal_summary"
+            icon="STOCK_JUSTIFY_FILL"
+            sequence="80"
+            />
+
+
+    </data>
+</openerp>

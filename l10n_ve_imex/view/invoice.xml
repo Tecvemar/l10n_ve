@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="inh_account_invoice_imex">
+            <field name="name">account.invoice.inherit.fiscal.imex</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="l10n_ve_fiscal_requirements.account_invoice_ext_view_supp_form_loc_ve"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@string='Other Info']" position="after">
+                    <page string="Imex">
+                        <group colspan="4" col="6">
+                            <field name="expedient" attrs="{'readonly':[('type','in',['out_invoice','out_refund'])]}"/>
+                            <field name="dua_form_id" attrs="{'readonly':[('expedient','=',False)]}"/>
+                            <field name="customs_form_id" attrs="{'invisible':[('type','in',('out_invoice', 'out_refund'))]}"/>
+                        </group>
+                        <separator colspan="6" string="Imex Taxes"/>
+                        <field name="imex_tax_line" nolabel="1">
+                            <tree>
+                                <field name="name"/>
+                                <field name="account_id"/>
+                                <field name="base_amount"/>
+                                <field name="tax_amount"/>
+                            </tree>
+                        </field>
+
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="inh_account_invoice_imex_CUST">
+            <field name="name">account.invoice.inherit.fiscal.imex.customer</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="l10n_ve_fiscal_requirements.account_invoice_ext_view_form_loc_ve"/>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@string='Other Info']" position="after">
+                    <page string="Imex">
+                        <group colspan="4" col="6">
+                            <field name="expedient" attrs="{'readonly':[('type','in',['in_invoice','in_refund'])]}"/>
+                            <field name="dua_form_id" attrs="{'readonly':[('expedient','=',False)],'required':[('expedient','=',True)]}"/>
+                            <field name="customs_form_id" attrs="{'invisible':[('type','in',('out_invoice', 'out_refund'))]}"/>
+                        </group>
+                        <separator colspan="6" string="Imex Taxes"/>
+                        <field name="imex_tax_line" nolabel="1">
+                            <tree>
+                                <field name="name"/>
+                                <field name="account_id"/>
+                                <field name="base_amount"/>
+                                <field name="tax_amount"/>
+                            </tree>
+                        </field>
+
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

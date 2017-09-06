@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+'report/l10n_ve_tcv_arcv.xml',
+-->
+
+<openerp>
+    <data>
+
+        <report auto="True"
+                id="report_l10n_ve_tcv_arcv"
+                model="l10n_ve.tcv.arcv"
+                name="l10n_ve.tcv.arcv.report"
+                rml="l10n_ve_withholding_islr/report/l10n_ve_tcv_arcv.rml"
+                string="l10n_ve_tcv_arcv"
+                header="False"
+                menu="False"/>
+
+
+        <record model="ir.ui.view" id="view_l10n_ve_tcv_arcv_form">
+            <field name="name">l10n_ve.tcv.arcv.form</field>
+            <field name="model">l10n_ve.tcv.arcv</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <field name="name" invisible="1"/>
+                    <group colspan="4" col="4">
+                        <field name="fiscalyear_id" on_change="on_change_data(fiscalyear_id,partner_id)" widget="selection"/>
+                        <field name="partner_id" on_change="on_change_data(fiscalyear_id,partner_id)"/>
+                    </group>
+                    <notebook colspan="4">
+                        <page string="Partners">
+                            <field name="line_ids" colspan="4" nolabel="1">
+                                <tree string="Withelded partners" editable="bottom">
+                                    <field name="to_print"/>
+                                    <field name="partner_id"/>
+                                    <field name="wh_qty" sum="Wh docs"/>
+                                    <field name="wh_lines"  sum="Wh lines"/>
+                                    <field name="wh_amount"  sum="Total wh"/>
+                                </tree>
+                                <form>
+                                    <group colspan="4" col="4">
+                                        <field name="to_print" invisible="1"/>
+                                        <field name="partner_id" colspan="4"/>
+                                    </group>
+                                    <group colspan="4" col="6">
+                                        <field name="wh_qty"/>
+                                        <field name="wh_lines"/>
+                                        <field name="wh_amount"/>
+                                    </group>
+                                    <field name="doc_ids" colspan="4" nolabel="1">
+                                        <tree string="Withholding detail">
+                                            <field name="islr_wh_doc_id"/>
+                                            <field name="date"/>
+                                            <field name="number"/>
+                                            <field name="control"/>
+                                            <field name="code"/>
+                                            <field name="rate"/>
+                                            <field name="amount_base"/>
+                                            <field name="amount_wh" sum="Total wh"/>
+                                        </tree>
+                                        <form>
+                                            <field name="islr_wh_doc_id" colspan="4"/>
+                                            <field name="date"/>
+                                            <field name="invoice_id"/>
+                                            <field name="control"/>
+                                            <field name="number"/>
+                                            <field name="code"/>
+                                            <field name="rate"/>
+                                            <field name="amount_base"/>
+                                            <field name="amount_wh" sum="Total wh"/>
+                                        </form>
+                                    </field>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                    <group colspan="4" col="10">
+                        <field name="loaded" invisible="1"/>
+                        <button name="button_load" string="Load" icon="terp-accessories-archiver+"
+                                type="object" colspan="1"/>
+                        <button name="button_all" string="All" icon=""
+                                type="object" colspan="1"
+                                attrs="{'readonly':[('loaded','=',False)]}"/>
+                        <button name="button_none" string="None" icon=""
+                                type="object" colspan="1"
+                                attrs="{'readonly':[('loaded','=',False)]}"/>
+                        <button name="button_revert" string="Revert" icon=""
+                                type="object" colspan="1"
+                                attrs="{'readonly':[('loaded','=',False)]}"/>
+                        <button name="%(report_l10n_ve_tcv_arcv)d" string="Print" icon="gtk-print"
+                                type="action" attrs="{'readonly':[('loaded','=',False)]}"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="view_l10n_ve_tcv_arcv_lines_tree">
+            <field name="name">l10n_ve.tcv.arcv.lines.tree</field>
+            <field name="model">l10n_ve.tcv.arcv.lines</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Print AR-CV">
+                    <field name="to_print" invisible="1"/>
+                    <field name="partner_id"/>
+                    <field name="wh_qty" sum="Wh docs"/>
+                    <field name="wh_lines"  sum="Wh lines"/>
+                    <field name="wh_amount"  sum="Total wh"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="action_l10n_ve_tcv_arcv" model="ir.actions.act_window">
+            <field name="name">AR-CV </field>
+            <field name="res_model">l10n_ve.tcv.arcv</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_l10n_ve_tcv_arcv_form"/>
+        </record>
+
+        <menuitem
+            id="menu_action_l10n_ve_tcv_arcv"
+            parent="l10n_ve_fiscal_requirements.menu_venezuela_reporting"
+            action="action_l10n_ve_tcv_arcv"
+            icon="STOCK_JUSTIFY_FILL"
+            />
+
+    </data>
+</openerp>

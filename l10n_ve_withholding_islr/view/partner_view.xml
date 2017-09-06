@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+    <!-- 
+    =====================================================
+    Partners Extension Income
+    =====================================================
+    -->  
+
+        <record id="res_partner_wh_islr" model="ir.ui.view">
+            <field name="name">res.partner.wh.islr</field>
+            <field name="model">res.partner</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="l10n_ve_withholding.wh_partner"/>
+            <field name="arch" type="xml">
+                <xpath expr="//separator[@string='vsep']" position="after">
+                    <newline/>
+                        <group col="4" colspan="2">
+                            <field name="islr_withholding_agent"/>
+                            <field name="spn"/>
+                        </group>
+                </xpath>
+                <xpath expr='//separator[@string="vsep"]' position='attributes'>
+                    <attribute name="string">Income Withholding</attribute>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>
+

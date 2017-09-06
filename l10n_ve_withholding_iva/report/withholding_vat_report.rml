@@ -1,0 +1,210 @@
+<?xml version="1.0"?>
+<document filename="Withholdinf IVA.pdf">
+
+  <template pageSize="(11in,8.5in)" title="Withholdinf IVA" author="Juan Márquez" allowSplitting="20" showBoundary="0">
+    <pageTemplate id="first">
+      <frame id="first" x1="10mm" y1="23mm" width="259mm" height="134mm"/>
+        <pageGraphics>
+          <!--  y + heigth = 265 -->
+          <place x="10mm" y="155mm" width="259mm" height="45mm">
+          <blockTable colWidths="168mm,28mm,23mm,40mm" style="TABLA_HEADER2">
+            <tr>
+              <td> <para style="TITLE2"><b>COMPROBANTE DE RETENCIÓN DEL IMPUESTO AL VALOR AGREGADO</b></para> </td>
+              <td> <para style="CELL_LABEL">Fecha:</para>
+                   <para style="TITLE3C"><b>[[formatLang(o.date,date=True) ]]</b></para> </td>
+              <td> <para style="CELL_LABEL">Período Fiscal:</para>
+                   <para style="TITLE3C"><b>[[ get_period(o.period_id) or '' ]]</b></para> </td>
+              <td> <para style="CELL_LABEL">Número comprobante:</para>
+                   <para style="TITLE3C"><b>[[ o.number.replace('-','') ]]</b></para> </td>
+            </tr>
+          </blockTable>
+          <spacer length="2mm" />
+          <blockTable colWidths="129.5mm,129.5mm" style="TABLA_HEADER2">
+            <tr>
+              <td> <para style="TITLE3C"><b>Agente de Retención</b></para> </td>
+              <td> <para style="TITLE3C"><b>Datos del Beneficiario</b></para> </td>
+            </tr>
+          </blockTable>
+          <spacer length="0.2mm" />
+          <blockTable colWidths="102mm,27.5mm,102mm,27.5mm" style="TABLA_FOOTER">
+            <tr>
+              <td> <para style="CELL_LABEL">Nombre o razón social:</para>
+                   <para style="IZQUIERDAN">[[ (o.company_id.partner_id and o.company_id.partner_id.name) or '' ]]</para> </td>
+              <td> <para style="CELL_LABEL">RIF:</para>
+                   <para style="CENTRON">[[ (o.company_id.partner_id and o.company_id.partner_id.str_rif) or '' ]]</para> </td>
+              <td> <para style="CELL_LABEL">Nombre o razón social:[[ ' *' if o.third_party_id else '']]</para>
+                   <para style="IZQUIERDAN">[[ (o.third_party_id and o.third_party_id.name or o.partner_id.name) or '' ]]</para> </td>
+              <td> <para style="CELL_LABEL">RIF:</para>
+                   <para style="CENTRON">[[ (o.third_party_id and o.third_party_id.str_rif or o.partner_id.str_rif) or '' ]]</para> </td>
+            </tr>
+          </blockTable>
+          <blockTable colWidths="129.5mm,129.5mm" style="TABLA_FOOTER">
+            <tr>
+              <td> <para style="CELL_LABEL">Dirección fiscal:</para>
+                   <para style="IZQUIERDAN">[[ get_address(o.company_id.partner_id.address) or '' ]]</para> </td>
+              <td> <para style="CELL_LABEL">Dirección fiscal:</para>
+                   <para style="IZQUIERDAN">[[ get_address(o.third_party_id and o.third_party_id.address or o.partner_id.address) or '' ]]</para> </td>
+            </tr>
+          </blockTable>
+          </place>
+          <place x="10mm" y="10mm" width="259mm" height="13mm">
+            <blockTable colWidths="259mm" style="TABLA_SINBORDE">
+              <tr>
+                <td>
+                  <para style="IZQUIERDAN">LEY IVA – ART. 11:</para>
+                  <para style="IZQUIERDA">“SERAN RESPONSABLES DEL PAGO DE IMPUESTO EN CALIDAD DE AGENTES DE RETENCION, LOS COMPRADORES O ADQUIRIENTES DE DETERMINADOS BIENES MUEBLES Y LOS</para>
+                  <para style="IZQUIERDA">RECEPTORES DE CIERTOS SERVICIOS A QUIENES LA ADMINISTRACION TRIBUTARIA DESIGNE COMO TAL”</para>
+                </td>
+              </tr>
+            </blockTable>
+          </place>
+          <setFont name="Helvetica" size="7.0"/>
+          <drawCentredString x="139mm" y="8mm">Página <pageNumber/></drawCentredString>
+      </pageGraphics>
+    </pageTemplate>
+  </template>
+
+  <stylesheet>
+    <blockTableStyle id="TABLA_HEADER2">
+      <blockAlignment value="LEFT" />
+      <blockValign value="CENTER" />
+      <lineStyle kind="GRID" colorName="#000000" start="0,0" stop="-1,-1" />
+      <blockBackground kind="GRID" colorName="khaki" start="0,0" stop="-1,-1" />
+    </blockTableStyle>
+    <blockTableStyle id="TABLA_HEADER">
+      <lineStyle kind="GRID" colorName="#000000" start="0,0" stop="-1,-1" />
+      <blockBackground kind="GRID" colorName="khaki" start="0,0" stop="-1,-1" />
+      <blockSpan start="1,0" stop="2,0" />
+      <blockSpan start="0,1" stop="1,1" />
+      <blockSpan start="2,1" stop="-1,1" />
+      <blockSpan start="0,-1" stop="-1,-1" />
+      <blockValign value="CENTER" />
+    </blockTableStyle>
+    <blockTableStyle id="TABLA_BODY">
+      <blockAlignment value="LEFT" />
+      <blockValign value="CENTER" />
+      <lineStyle kind="GRID" colorName="darkgrey" start="0,0" stop="-1,-1" />
+      <blockBackground kind="GRID" colorName="white" start="0,0" stop="-1,-1" />
+    </blockTableStyle>
+    <blockTableStyle id="TABLA_TOTAL">
+      <blockAlignment value="LEFT" />
+      <blockValign value="CENTER" />
+      <lineStyle kind="GRID" colorName="darkgrey" start="1,0" stop="-1,-1" />
+      <blockBackground kind="GRID" colorName="white" start="0,0" stop="-1,-1" />
+    </blockTableStyle>
+    <blockTableStyle id="TABLA_FOOTER">
+      <blockAlignment value="LEFT" />
+      <blockValign value="TOP" />
+      <lineStyle kind="GRID" colorName="darkgrey" start="0,0" stop="-1,-1" />
+      <blockBackground kind="GRID" colorName="white" start="0,0" stop="-1,-1" />
+    </blockTableStyle>
+    <blockTableStyle id="TABLA_SINBORDE">
+      <blockAlignment value="LEFT" />
+      <blockValign value="TOP" />
+      <lineStyle kind="GRID" colorName="white" start="0,0" stop="-1,-1" />
+      <blockBackground kind="GRID" colorName="white" start="0,0" stop="-1,-1" />
+    </blockTableStyle>
+    <blockTableStyle id="TITLE">
+      <lineStyle kind="GRID" colorName="black" start="0,0" stop="-1,-1" thickness="0.5" />
+      <blockValign value="TOP" />
+    </blockTableStyle>
+    <initialize>
+      <paraStyle name="all" alignment="justify" />
+    </initialize>
+    <paraStyle name="DERECHA" alignment="RIGHT" fontName="Helvetica" fontSize="8.0" leading="9" spaceBefore="0" textColor="black" />
+    <paraStyle name="IZQUIERDA" alignment="LEFT" fontName="Helvetica" fontSize="8.0" leading="9" spaceBefore="0" textColor="black" />
+    <paraStyle name="CENTRO" alignment="CENTER" fontName="Helvetica" fontSize="8.0" leading="8" spaceBefore="0" textColor="black" />
+    <paraStyle name="DERECHAN" alignment="RIGHT" fontName="Helvetica-Bold" fontSize="8.0" leading="9" spaceBefore="0" textColor="black" />
+    <paraStyle name="IZQUIERDAN" alignment="LEFT" fontName="Helvetica-Bold" fontSize="8.0" leading="9" spaceBefore="0" textColor="black" />
+    <paraStyle name="CENTRON" alignment="CENTER" fontName="Helvetica-Bold" fontSize="8.0" leading="8" spaceBefore="0" textColor="black" />
+    <paraStyle name="CENTRO7N" alignment="CENTER" fontName="Helvetica-Bold" fontSize="7.0" leading="7" spaceBefore="0" textColor="black" />
+    <paraStyle name="CENTRO7" alignment="CENTER" fontName="Helvetica" fontSize="7.0" leading="7" spaceBefore="0" textColor="black" />
+    <paraStyle name="IZQUIERDA7" alignment="LEFT" fontName="Helvetica" fontSize="7.0" leading="7" spaceBefore="0" textColor="black" />
+    <paraStyle name="LEFT7" alignment="LEFT" fontName="Helvetica" fontSize="7.0" leading="7" spaceBefore="0" textColor="black" />
+    <paraStyle name="CELL_LABEL" alignment="LEFT" fontName="Helvetica" fontSize="7.0" leading="8" spaceBefore="0" textColor="black" />
+    <paraStyle name="RIGHT7" alignment="RIGHT" fontName="Helvetica" fontSize="7.0" leading="7" spaceBefore="0" textColor="black" />
+    <paraStyle name="RIGHT7N" alignment="RIGHT" fontName="Helvetica-Bold" fontSize="7.0" leading="7" spaceBefore="0" textColor="black" />
+    <paraStyle name="TITLE" alignment="CENTER" fontName="Helvetica" fontSize="20.0" leading="20" spaceBefore="0" textColor="black" />
+    <paraStyle name="TITLE2" alignment="LEFT" fontName="Helvetica" fontSize="12.0" leading="15" spaceBefore="0" textColor="black" />
+    <paraStyle name="TITLE2R" alignment="RIGHT" fontName="Helvetica" fontSize="12.0" leading="15" spaceBefore="0" textColor="black" />
+    <paraStyle name="TITLE3" alignment="LEFT" fontName="Helvetica" fontSize="10.0" leading="10" spaceBefore="0" textColor="black" />
+    <paraStyle name="TITLE3C" alignment="CENTER" fontName="Helvetica" fontSize="10.0" leading="10" spaceBefore="0" textColor="black" />
+    <paraStyle name="TITLE3R" alignment="RIGHT" fontName="Helvetica" fontSize="10.0" leading="10" spaceBefore="0" textColor="black" />
+    <paraStyle name="TITLE4" alignment="LEFT" fontName="Helvetica" fontSize="20.0" leading="20" spaceBefore="0" textColor="black" />
+    <paraStyle name="TITLE5" alignment="LEFT" fontName="Helvetica" fontSize="15.0" leading="15" spaceBefore="0" textColor="black" />
+    <paraStyle name="TITLE6" alignment="LEFT" fontName="Helvetica" fontSize="9.0" leading="9" spaceBefore="0" textColor="black" />
+    <paraStyle name="TITLE6R" alignment="RIGHT" fontName="Helvetica" fontSize="9.0" leading="9" spaceBefore="0" textColor="black" />
+  </stylesheet>
+
+  <story>
+      <para style="IZQUIERDA">[[repeatIn(objects,'o')]]</para>
+      <section>
+        <blockTable colWidths="17mm,22mm,24mm,17mm,17mm,12mm,21mm,21mm,21mm,21mm,12mm,21mm,12mm,21mm" style="TABLA_BODY" repeatRows="1">
+          <tr>
+            <td><para style="CENTRO7N">Fecha Factura</para></td>
+            <td><para style="CENTRO7N">Nº de Factura</para></td>
+            <td><para style="CENTRO7N">Nº Control</para></td>
+            <td><para style="CENTRO7N">Nº Nota Crédito</para></td>
+            <td><para style="CENTRO7N">Nº Nota Débito</para></td>
+            <td><para style="CENTRO7N">Tipo Trans</para></td>
+            <td><para style="CENTRO7N">Nº Factura Afectada</para></td>
+            <td><para style="CENTRO7N">Total Compras Incluye IVA</para></td>
+            <td><para style="CENTRO7N">Compras sin Derecho a IVA</para></td>
+            <td><para style="CENTRO7N">Base Imponible</para></td>
+            <td><para style="CENTRO7N">% Alíc.</para></td>
+            <td><para style="CENTRO7N">Impuesto IVA</para></td>
+            <td><para style="CENTRO7N">% Ret.</para></td>
+            <td><para style="CENTRO7N">IVA Retenido</para></td>
+          </tr>
+          <tr>[[repeatIn( get_totales(o.id),'l')]][[ setLang(company.partner_id.lang) ]]
+            <td><para style="CENTRO7">[[ formatLang(l['fecha'],date=True) ]]</para></td>
+            <td><para style="CENTRO7">[[ ((l['inv_type'] in ['in_invoice']) and l['nro_fact']) or '' ]][[ ((l['inv_type'] in ['out_invoice']) and l['nro']) or '' ]]</para></td>
+            <td><para style="CENTRO7">[[ l['nro_ctrl'] ]]</para></td>
+            <td><para style="CENTRO7">[[ ((l['inv_type']=='in_refund') and l['nro_ncre']) or '' ]]</para></td>
+            <td><para style="CENTRO7"><font color="white"> </font></para></td>
+            <td><para style="CENTRO7">[[ l['tip_tran'] ]]</para></td>
+            <td><para style="CENTRO7">[[ ((l['inv_type'] in ['in_refund', 'out_refund']) and l['nro_fafe']) or '' ]]</para></td>
+            <td><para style="RIGHT7">[[ formatLang(l['tot_civa']) or '' ]]</para></td>
+            <td><para style="IZQUIERDA7">[[ l['cmp_sdcr'] or '' ]]</para></td>
+            <td><para style="RIGHT7">[[ formatLang(l['bas_impo']) ]]</para></td>
+            <td><para style="CENTRO7">[[ formatLang(l['alic']) ]]</para></td>
+            <td><para style="RIGHT7">[[ formatLang(l['iva']) ]]</para></td>
+            <td><para style="CENTRO7">[[ l['porcenta'] ]]%</para></td>
+            <td><para style="RIGHT7">[[ formatLang(l['iva_ret']) ]] </para></td>
+          </tr>
+        </blockTable>
+      </section>
+      <blockTable colWidths="172mm,66mm,21mm" style="TABLA_TOTAL">
+        <tr>
+            <td><para style="RIGHT7N"><font color="white"></font></para></td>
+            <td><para style="RIGHT7N">TOTAL IMPUESTO RETENIDO</para></td>
+            <td><para style="RIGHT7N">[[ formatLang(get_tot_gral_retencion())]]</para></td>
+        </tr>
+      </blockTable>
+      <section>
+        [[ o.third_party_id or removeParentNode('section') ]]
+        <spacer length="2mm"/>
+        <blockTable colWidths="259mm" style="TABLA_SINBORDE">
+            <tr>
+              <td> <para style="IZQUIERDA">* Comprobante <b>por cuenta de terceros</b>, según lo establecido en el Art. 10 del la Ley de IVA. Sobre factura de: <b>[[ o.partner_id.name ]]</b>, RIF: <b>[[ o.partner_id.str_rif ]]</b></para>
+              </td>
+            </tr>
+        </blockTable>
+      </section>
+      <spacer length="15mm"/>
+      <blockTable colWidths="129.5mm,129.5mm" style="TABLA_SINBORDE">
+        <tr>
+            <td>
+                <para style="CENTRO">_____________________________________________</para>
+                <para style="CENTRO">[[ o.company_id.partner_id.name ]]</para>
+                <para style="CENTRO">Firma y Sello</para>
+            </td>
+             <td>
+                <para style="CENTRO">_____________________________________________</para>
+                <para style="CENTRO">[[ o.partner_id.name ]]</para>
+                <para style="CENTRO">Firma y Sello</para>
+            </td>
+        </tr>
+    </blockTable>
+  </story>
+</document>

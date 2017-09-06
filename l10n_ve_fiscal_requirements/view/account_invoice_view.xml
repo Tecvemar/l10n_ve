@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    <!--
+    =====================================================
+    Invoices Extension
+    =====================================================
+    -->
+        <record id="account_invoice_ext_view_form_loc_ve" model="ir.ui.view">
+            <field name="name">invoice_extended.account.invoice.form.loc_ve</field>
+            <field name="model">account.invoice</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date_invoice']" position="replace">
+                    <field name="date_invoice"/>
+                    <field name="date_document" invisible="1"/>
+                    <newline/>
+                </xpath>
+                <xpath expr="/form/notebook/page/field[@name='user_id']" position="after">
+                    <field name="sin_cred" />
+                    <field name="loc_req" invisible="1"/>
+                    <field name="invoice_printer" attrs="{'invisible':[('loc_req','=',True)]}"/>
+                    <field name="fiscal_printer" attrs="{'invisible':[('loc_req','=',True)]}"/>
+                    <field name="z_report" attrs="{'invisible':[('loc_req','=',True)]}"/>
+
+                </xpath>
+                <xpath expr="//field[@name='date_invoice']" position="after">
+                    <field name="nro_ctrl"/>
+                </xpath>
+                <xpath expr="/form/notebook/page/field[@name='move_id']" position="after">
+                    <newline/>
+                    <button name="%(action_wiz_nroctrl)d" type='action' string='Change control number' icon="gtk-execute" colspan="2"/>
+                </xpath>
+                <xpath expr="//field[@name='payment_term']" position="replace">
+                </xpath>
+                <xpath expr="/form/notebook/page/field[@name='date_due']" position="after">
+                    <field name="payment_term"/>
+                </xpath>
+                <xpath expr="//field[@name='address_invoice_id']" position="replace">
+                    <field name="address_invoice_id" colspan="4"/>
+                </xpath>
+                <xpath expr="/form/notebook/page/group/group/button[@string='Refund']" position="replace">
+                    <button name="%(account.action_account_invoice_refund)d" type='action' string='Refund' states='open,paid' icon="gtk-execute"/>
+                </xpath>
+                <xpath expr="/form/group/field[@name='address_invoice_id']" position="replace">
+                    <field name="address_invoice_id"  domain="[('partner_id','=',partner_id), ('type','=','invoice')]"/>
+                </xpath>
+<!--
+                <xpath expr="//field[@name='period_id']" position="replace">
+                </xpath>
+-->
+                <xpath expr="//field[@name='fiscal_position']" position="replace">
+                </xpath>
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="parent_id" attrs="{'required':[('type','=','out_refund')]}" domain="[('partner_id','=',partner_id),('id', '!=', active_id),('type','in',['out_invoice', 'out_refund'])]"/>
+                </xpath>
+                <xpath expr="//button[@string='Refund']" position="after">
+                    <button name="%(action_account_invoice_debit)d" type='action' string='Debit Note' icon="gtk-execute" attrs="{'invisible':['|',('state','in',['proforma2','proforma','cancel', 'draft']),('type','in',['out_refund', 'in_refund'])]}"/>
+                </xpath>
+                <xpath expr="//button[@string='Refund']" position="after">
+                    <button name="%(action_account_invoice_parent)d" type='action' string='Parent Invoice' states='open,paid' icon="gtk-execute" attrs="{'invisible':[('type','!=','out_refund')]}"/>
+                </xpath>
+                <notebook>
+                    <page string="Debit-Credit Notes" position="inside">
+                        <field name="child_ids" nolabel="1" widget="many2many" domain="[('partner_id','=',partner_id),('id', '!=', active_id),('type','in',['out_invoice', 'out_refund'])]"/>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+
+        <record id="account_invoice_ext_view_supp_form_loc_ve" model="ir.ui.view">
+            <field name="name">invoice_extended.account.invoice.supplier.form.loc_ve</field>
+            <field name="model">account.invoice</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date_invoice']" position="replace">
+                    <field name="date_invoice"/>
+                    <field name="date_document" invisible="0"/>
+                </xpath>
+                <xpath expr="/form/notebook/page/field[@name='user_id']" position="after">
+                    <field name="sin_cred" />
+                </xpath>
+                <xpath expr="/form/notebook/page/field[@name='check_total']" position="after">
+                    <group colspan="2" col="6">
+                        <field  name="supplier_invoice_number" required="1"/>
+                        <field  name="nro_ctrl" />
+                    </group>
+                </xpath>
+                <xpath expr="/form/notebook/page/field[@name='move_id']" position="after">
+                    <newline/>
+                    <button name="%(action_wiz_nroctrl)d" type='action' string='Change control number' icon="gtk-execute"  colspan="2"/>
+                </xpath>
+<!--
+                <xpath expr="//field[@name='period_id']" position="replace">
+                </xpath>
+-->
+
+                <xpath expr="//field[@name='fiscal_position']" position="replace">
+                </xpath>
+                <xpath expr="/form/notebook/page/group/group/button[@string='Refund']" position="replace">
+                    <button name="%(account.action_account_invoice_refund)d" type='action' string='Refund' states='open,paid' icon="gtk-execute"/>
+                </xpath>
+                <xpath expr="/form/group/field[@name='address_invoice_id']" position="replace">
+                    <field name="address_invoice_id"  domain="[('partner_id','=',partner_id), ('type','=','invoice')]"/>
+                </xpath>
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="parent_id" attrs="{'required':[('type','=','in_refund')]}" domain="[('partner_id','=',partner_id),('id', '!=', active_id),('type','in',['in_invoice', 'in_refund'])]"/>
+                </xpath>
+                <xpath expr="//button[@string='Refund']" position="after">
+                    <button name="%(action_account_invoice_debit)d" type='action' string='Debit Note' icon="gtk-execute" attrs="{'invisible':['|',('state','in',['proforma2','proforma','cancel', 'draft']),('type','in',['out_refund', 'in_refund'])]}"/>
+                </xpath>
+                <xpath expr="//button[@string='Refund']" position="after">
+                    <button name="%(action_account_invoice_parent)d" type='action' string='Parent Invoice' states='open,paid' icon="gtk-execute" attrs="{'invisible':[('type','!=','in_refund')]}"/>
+                </xpath>
+                <notebook>
+                    <page string="Debit-Credit Notes" position="inside">
+                        <field name="child_ids" nolabel="1" widget="many2many" domain="[('partner_id','=',partner_id),('id', '!=', active_id),('type','in',['in_invoice', 'in_refund'])]"/>
+                    </page>
+                </notebook>
+            </field>
+        </record>
+
+        <record id="account_inv_ext_search_ref" model="ir.ui.view">
+            <field name="name">invoice_ext.search.ref</field>
+            <field name="model">account.invoice</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='number']" position="after">
+                    <field name="supplier_invoice_number"/>
+                </xpath>
+                <field name="user_id" position="replace">
+                </field>
+                <field name="amount_total" position="replace">
+                </field>
+                <field name="journal_id" position="replace">
+                </field>
+                <field name="period_id" position="replace">
+                </field>
+                <field name="name" position="replace">
+                    <newline/>
+                    <group expand="0" string="Extended Filters..." colspan="4" col="8" groups="base.group_extended">
+                        <field name="amount_total"/>
+                        <field name="journal_id"/>
+                        <field name="period_id"/>
+                    </group>
+                </field>
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="name"/>
+                </xpath>
+            </field>
+        </record>
+
+        <menuitem id="menu_venezuela_reporting" name="Venezuela Reports" parent="account.menu_finance_legal_statement"/>
+    </data>
+</openerp>

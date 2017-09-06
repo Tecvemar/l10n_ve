@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+<!--
+'view/dua_form.xml',
+ -->
+
+        <record model="ir.ui.view" id="view_dua_form_search">
+            <field name="name">dua.form.search</field>
+            <field name="model">dua.form</field>
+            <field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="">
+<!--
+                    <group>
+                        <filter string="" icon="gtk-ok" domain="[]" context="{'group_by':'name'}"/>
+                    </group>
+-->
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="agent_partner_id"/>
+                    <field name="ref"/>
+                </search>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="view_dua_form_tree">
+            <field name="name">dua.form.tree</field>
+            <field name="model">dua.form</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="agent_partner_id"/>
+                    <field name="ref"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="view_dua_form_form">
+            <field name="name">dua.form.form</field>
+            <field name="model">dua.form</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="agent_partner_id"/>
+                    <field name="ref"/>
+                    <notebook colspan="4">
+                        <page string="SENIAT - Forms">
+                            <field name="customs_form_ids" colspan="4" nolabel="1">
+                            </field>
+                        </page>
+                        <page string="Invoice">
+                            <field name="invoice_ids" colspan="4" nolabel="1">
+                            </field>
+                        </page>
+                    </notebook>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</openerp>
