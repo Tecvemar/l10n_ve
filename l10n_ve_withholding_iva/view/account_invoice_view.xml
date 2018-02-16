@@ -58,6 +58,10 @@
                 <xpath expr='//separator[@string="isep"]' position='attributes'>
                     <attribute name="string">Withholdings Vat</attribute>
                 </xpath>
+
+                <xpath expr="/form/notebook/page/field[@name='user_id']" position="after">
+                     <field name="fiscal_printer"/>
+                </xpath>
             </field>
         </record>
 

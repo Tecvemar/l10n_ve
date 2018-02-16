@@ -228,8 +228,10 @@ class islr_wh_doc(osv.osv):
                                             ('type', 'in', ('in_invoice',
                                                             'in_refund'))],
                                   order="number desc", limit=1)
-            last = self.browse(cr, uid, last_id, context=context)[0]
-            if last.date_ret > obj.date_ret or last.date_uid > obj.date_uid:
+            last = last_id and self.browse(
+                cr, uid, last_id, context=context)[0]
+            if last and (last.date_ret > obj.date_ret or
+                         last.date_uid > obj.date_uid):
                 raise osv.except_osv(
                     _('Error!'),
                     _('The accounting date must be >= %s and ' +
@@ -1126,5 +1128,6 @@ class islr_wh_doc_line(osv.osv):
             'islr.wh.doc.invoices', 'Withheld Invoice',
             ondelete='cascade', help="Withheld Invoices"),
     }
+
 
 islr_wh_doc_line()

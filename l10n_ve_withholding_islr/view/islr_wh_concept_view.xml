@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-    <!-- 
+    <!--
     =====================================================
     CONCEPT OF RETENTION, TASAS
     =====================================================
-    --> 
+    -->
         <record id="view_wh_concept_filter" model="ir.ui.view">
             <field name="name">islr.wh.concept.search</field>
             <field name="model">islr.wh.concept</field>
@@ -100,15 +100,15 @@
             <field name="res_model">islr.wh.concept</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form,calendar,graph</field>
+            <field name="view_mode">tree,form</field>
             <field name="search_view_id" ref="view_wh_concept_filter"/>
             <field name="help">With "Concept of Withholding Income" you can create and manage the concept of wittholding income. For each concept is to create and manage rates associated.</field>
         </record>
-        
+
         <record model="ir.actions.act_window.view" id="action_wh_islr_concept_tree">
             <field name="sequence" eval="10"/>
             <field name="view_mode">tree</field>
-            <field name="view_id" ref="view_wh_concept_islr_tree"/> 
+            <field name="view_id" ref="view_wh_concept_islr_tree"/>
             <field name="act_window_id" ref="action_wh_islr_concept"/>
         </record>
         <record model="ir.actions.act_window.view" id="action_wh_islr_concept_form">
@@ -117,9 +117,9 @@
             <field name="view_id" ref="view_wh_concept_islr_form"/>
             <field name="act_window_id" ref="action_wh_islr_concept"/>
         </record>
-        
-        <menuitem name="Concept of Withholding Income" 
-            id="menu_action_concept_retention" 
+
+        <menuitem name="Concept of Withholding Income"
+            id="menu_action_concept_retention"
             parent="menu_wh_configuration_islr"
             action="action_wh_islr_concept"/>
     </data>
