@@ -228,6 +228,7 @@ class islr_wh_doc(osv.osv):
                                             ('type', 'in', ('in_invoice',
                                                             'in_refund'))],
                                   order="number desc", limit=1)
+            # Fix to handle first ret (no last)
             last = last_id and self.browse(
                 cr, uid, last_id, context=context)[0]
             if last and (last.date_ret > obj.date_ret or

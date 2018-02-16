@@ -91,7 +91,6 @@ class adjust_wh_islr_doc(osv.osv_memory):
                 else:
                     obj_inv = self.pool.get('account.invoice')
                     islr_wh_doc_id = obj_inv.create_islr_wh_doc(cr, uid, [so_brw.invoice_id.id], context)
-
         return {'type': 'ir.actions.act_window_close'}
 
 
