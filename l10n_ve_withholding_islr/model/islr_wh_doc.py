@@ -1130,4 +1130,5 @@ class islr_wh_doc_line(osv.osv):
             ondelete='cascade', help="Withheld Invoices"),
     }
 
+
 islr_wh_doc_line()

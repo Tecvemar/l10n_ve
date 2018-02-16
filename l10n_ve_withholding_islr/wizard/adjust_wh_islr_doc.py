@@ -31,19 +31,19 @@ import decimal_precision as dp
 
 
 class adjust_wh_islr_doc(osv.osv_memory):
-    
+
     _name = 'adjust.wh.islr.doc'
-    
+
     _columns = {'name': fields.char('Name', size=64, required=False, readonly=False),
                 'invoice_id': fields.many2one('account.invoice', 'Invoice Reference',readonly=True),
                 'line_ids':fields.one2many('adjust.wh.islr.doc.line','line_id','Lines'),
                 'sure':fields.boolean('Are you sure?'),
         }
-        
+
     _defaults = {
         'sure': False,
-        }        
-        
+        }
+
     def default_get(self, cr, uid, fields, context=None):
         data = super(adjust_wh_islr_doc, self).default_get(cr, uid, fields, context)
         if data.get('invoice_id'):
@@ -60,8 +60,8 @@ class adjust_wh_islr_doc(osv.osv_memory):
             if lines:
                 data.update({'line_ids':lines})
         return data
-        
-        
+
+
     def adjust_wh_concep(self, cr, uid, ids, context=None):
         ids = isinstance(ids, (int, long)) and [ids] or ids
         so_brw = self.browse(cr,uid,ids,context={})[0]
@@ -76,7 +76,7 @@ class adjust_wh_islr_doc(osv.osv_memory):
             raise osv.except_osv(_("Error!"), _("No changes to withholding concept to do!"))
         for c in changes:
             obj_lin.write(cr,uid,c['invoice_line_id'],c,context=context)
-            if so_brw.invoice_id: 
+            if so_brw.invoice_id:
                 if so_brw.invoice_id.islr_wh_doc_id:
                     if c['withholdable_islr']:
                         ## Update withholding amount
@@ -91,7 +91,6 @@ class adjust_wh_islr_doc(osv.osv_memory):
                 else:
                     obj_inv = self.pool.get('account.invoice')
                     islr_wh_doc_id = obj_inv.create_islr_wh_doc(cr, uid, [so_brw.invoice_id.id], context)
-                    
         return {'type': 'ir.actions.act_window_close'}
 
 
@@ -99,41 +98,41 @@ adjust_wh_islr_doc()
 
 
 class adjust_wh_islr_doc_line(osv.osv_memory):
-    
+
     _name = 'adjust.wh.islr.doc.line'
-    
+
     _description = "Wizard that changes the withholding concept in invoice lines"
-    
+
     _columns = {
         'line_id':fields.many2one('adjust.wh.islr.doc', 'Adjust', readonly=True),
-        'invoice_line_id': fields.many2one('account.invoice.line', 'line', readonly=False, required=True),    
-        'name':fields.related('invoice_line_id','name', type='char', size=256, relation='account.invoice.line', 
+        'invoice_line_id': fields.many2one('account.invoice.line', 'line', readonly=False, required=True),
+        'name':fields.related('invoice_line_id','name', type='char', size=256, relation='account.invoice.line',
                               string='Description', readonly=True),
-        'concept_id': fields.related('invoice_line_id','concept_id', type='many2one', relation='islr.wh.concept', 
+        'concept_id': fields.related('invoice_line_id','concept_id', type='many2one', relation='islr.wh.concept',
                                      string='Actual wh concept', readonly=True),
-        'amount': fields.related('invoice_line_id','price_subtotal', type='float', relation='account.invoice.line', 
-                                 string='Amount', readonly=True), 
-        'act_concept_id': fields.many2one('islr.wh.concept','Act Withholding Concept', 
+        'amount': fields.related('invoice_line_id','price_subtotal', type='float', relation='account.invoice.line',
+                                 string='Amount', readonly=True),
+        'act_concept_id': fields.many2one('islr.wh.concept','Act Withholding Concept',
                         help="New concept of Income Withholding asociate this rate"),
         'new_concept_id': fields.many2one('islr.wh.concept','New Withholding Concept', required=True,
                         help="New concept of Income Withholding asociate this rate"),
         }
-        
-       
+
+
     #~ def create(self, cr, uid, vals, context=None):
         #~ context = context or {}
         #~ if not context.get('adjust_wh_islr_doc'):
             #~ raise osv.except_osv(_('Error!'),_('Can\'t add more lines.'))
         #~ res = super(adjust_wh_islr_doc, self).create(cr, uid, vals, context)
         #~ return res
-        #~ 
+        #~
     #~ def unlink(self, cr, uid, vals, context=None):
         #~ context = context or {}
         #~ if not context.get('adjust_wh_islr_doc'):
             #~ raise osv.except_osv(_('Error!'),_('Can\'t delete lines.'))
         #~ res = super(adjust_wh_islr_doc, self).unlink(cr, uid, vals, context)
-        #~ return res    
-        
+        #~ return res
+
 adjust_wh_islr_doc_line()
 
 

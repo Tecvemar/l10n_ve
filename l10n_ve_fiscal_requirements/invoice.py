@@ -50,15 +50,15 @@ class account_invoice(osv.osv):
         if context is None: context={}
         inv_brw = self.browse(cr, uid, ids, context=context)
         for inv in inv_brw:
-            if inv.type in ('out_invoice','out_refund'):
+            if inv.type in ('out_invoice', 'out_refund'):
                 return True
             inv_ids = self.search(
-                cr, uid,
-                [('supplier_invoice_number', '=', inv.supplier_invoice_number),
-                 ('type', '=', inv.type),
-                 ('partner_id', '=', inv.partner_id.id),
-                 ('id', '!=', inv.id)],
-                 context=context)
+                cr, uid, [
+                ('supplier_invoice_number', '=', inv.supplier_invoice_number),
+                ('type', '=', inv.type),
+                ('partner_id', '=', inv.partner_id.id),
+                ('id', '!=', inv.id)
+                ], context=context)
             return not inv_ids
         return True
 
@@ -119,10 +119,12 @@ class account_invoice(osv.osv):
             context = {}
         default.update({
             'child_ids':[],
-            'nro_ctrl':None,
-            'reference':None,
-        })
-        return super(account_invoice, self).copy(cr, uid, id, default, context)
+            'nro_ctrl': False,
+            'reference': False,
+            'supplier_invoice_number': False,
+            })
+        res = super(account_invoice, self).copy(cr, uid, id, default, context)
+        return res
 
 
     def write(self, cr, uid, ids, vals, context=None):
