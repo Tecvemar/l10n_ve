@@ -211,6 +211,10 @@ class account_invoice(osv.osv):
                                                 {'invoice_id': inv_id, 'islr_wh_doc_id': islr_wh_doc_id}))
         return iwhdi_ids
 
+    def _create_islr_wh_doc(self, cr, uid, ids, context=None):
+        '''Keep to avoid server action problem (original declaration)'''
+        return self.create_islr_wh_doc(cr, uid, ids, context)
+
     def create_islr_wh_doc(self, cr, uid, ids, context=None):
         """ Function to create in the model islr_wh_doc
         """
