@@ -74,16 +74,15 @@ class fiscal_book(osv.osv):
         context = context or {}
         res = {}.fromkeys(ids, 'NO HAY DIRECCION FISCAL DEFINIDA')
         #~ TODO: ASK: what company, fisal.book.company_id?
-        addr = self.pool.get('res.users').browse(
-            cr, uid, uid, context=context).company_id.partner_id
-        for fb_id in ids:
-            if addr:
-                res[fb_id] = addr.type == 'invoice' and (addr.street or '') + \
-                    ' ' + (addr.street2 or '') + ' ' + (addr.zip or '') + ' ' \
-                    + (addr.city or '') + ' ' + \
-                    (addr.country_id and addr.country_id.name or '') + \
-                    ', TELF.:' + (addr.phone or '') or \
-                    'NO HAY DIRECCION FISCAL DEFINIDA'
+        for item in self.browse(cr, uid, ids, context={}):
+            address = item.company_id.partner_id.address_id
+            addr = [addr for addr in address if addr.type == 'invoice']
+            addr_str = ' '.join((
+                addr.street, addr.street2, addr.zip, addr.city,
+                addr.country_id and addr.country_id.name, ', TELF.:',
+                addr.phone))
+            res[item.id] = ' '.join(addr_str) or \
+                'NO HAY DIRECCION FISCAL DEFINIDA'
         return res
 
     def _get_month_year(self, cr, uid, ids, field_name, arg, context=None):
@@ -2206,6 +2205,7 @@ class adjustment_book_line(osv.osv):
             help='Fiscal Book where this line is related to'),
     }
     _rec_rame = 'partner'
+
 
 fiscal_book()
 fiscal_book_lines()

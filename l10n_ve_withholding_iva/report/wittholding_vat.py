@@ -27,8 +27,8 @@
 
 import time
 from report import report_sxw
-from osv import osv
-import pooler
+# ~ from osv import osv
+# ~ import pooler
 
 class rep_comprobante(report_sxw.rml_parse):
     #Variables Globales----------------------------------------------------
@@ -109,8 +109,8 @@ class rep_comprobante(report_sxw.rml_parse):
 
         comp_obj = self.pool.get('account.wh.iva')
         comp = comp_obj.browse(self.cr,self.uid, comp_id)
-        res = {}
-        ttal = {}
+        # ~ res = {}
+        # ~ ttal = {}
         lst_comp = []
 
         dic_inv = {}
@@ -236,6 +236,13 @@ class rep_comprobante(report_sxw.rml_parse):
         self.ttbase = tot_base_imp.get('s',0.0) - tot_base_imp.get('r',0.0)
         self.ttiva = tot_imp_iva.get('s',0.0) - tot_imp_iva.get('r',0.0)
         self.ttretencion = tot_iva_ret.get('s',0.0) - tot_iva_ret.get('r',0.0)
+        # limit with for some string fields
+        for line in lst_comp:
+            for fld, ln in (('nro_fact', 12), ('nro_ctrl', 12),
+                            ('nro', 12), ('nro_ncre', 10),
+                            ('nro_ndeb', 10), ('nro_fafe', 10)):
+                if len(line.get(fld, '')) > ln:
+                    line[fld] = line[fld][:ln] + '\n'+ line[fld][ln:]
         return lst_comp
 
     def _get_tot_gral_compra(self):

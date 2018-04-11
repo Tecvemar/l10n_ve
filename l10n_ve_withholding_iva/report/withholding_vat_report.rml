@@ -169,7 +169,7 @@
             <td><para style="CENTRO7">[[ l['tip_tran'] ]]</para></td>
             <td><para style="CENTRO7">[[ ((l['inv_type'] in ['in_refund', 'out_refund']) and l['nro_fafe']) or '' ]]</para></td>
             <td><para style="RIGHT7">[[ formatLang(l['tot_civa']) or '' ]]</para></td>
-            <td><para style="IZQUIERDA7">[[ l['cmp_sdcr'] or '' ]]</para></td>
+            <td><para style="RIGHT7">[[ formatLang(l['cmp_sdcr']) or '' ]]</para></td>
             <td><para style="RIGHT7">[[ formatLang(l['bas_impo']) ]]</para></td>
             <td><para style="CENTRO7">[[ formatLang(l['alic']) ]]</para></td>
             <td><para style="RIGHT7">[[ formatLang(l['iva']) ]]</para></td>
