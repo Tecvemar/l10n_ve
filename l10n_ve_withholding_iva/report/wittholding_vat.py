@@ -241,7 +241,7 @@ class rep_comprobante(report_sxw.rml_parse):
             for fld, ln in (('nro_fact', 12), ('nro_ctrl', 12),
                             ('nro', 12), ('nro_ncre', 10),
                             ('nro_ndeb', 10), ('nro_fafe', 10)):
-                if len(line.get(fld, '')) > ln:
+                if line.get(fld) and len(line.get(fld, '')) > ln:
                     line[fld] = line[fld][:ln] + '\n'+ line[fld][ln:]
         return lst_comp
 
