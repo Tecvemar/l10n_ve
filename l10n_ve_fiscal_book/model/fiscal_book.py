@@ -313,6 +313,10 @@ class fiscal_book(osv.osv):
             states={'draft': [('readonly', False)]},
             help="Book's Fiscal Period. The periods listed are thouse how are"
             " regular periods, i.e. not opening/closing periods."),
+        'date_from': fields.date(
+            'Date from'),  # Set required in view
+        'date_to': fields.date(
+            'Date to'),  # Set required in view
         'state': fields.selection([('draft', 'Getting Ready'),
                                    ('confirmed', 'Approved by Manager'),
                                    ('done', 'Seniat Submitted'),
@@ -712,7 +716,8 @@ class fiscal_book(osv.osv):
         inv_state = ['paid', 'open'] if fb_brw.type != 'sale' else ['paid', 'open', 'cancel']
         #~ pull invoice data
         inv_ids = inv_obj.search(cr, uid,
-                                 [('period_id', '=', fb_brw.period_id.id),
+                                 [('date_invoice', '>=', fb_brw.date_from),
+                                  ('date_invoice', '<=', fb_brw.date_to),
                                   ('company_id', '=', fb_brw.company_id.id),
                                   ('type', 'in', inv_type),
                                   ('state', 'in', inv_state)],
@@ -769,9 +774,13 @@ class fiscal_book(osv.osv):
         issue_inv_ids = inv_obj.search(
             cr, uid,
             ['|',
-             '&', ('fb_id', '=', fb_brw.id), ('period_id', '!=', fb_brw.period_id.id),
-             '&', '&', ('period_id', '=', fb_brw.period_id.id), ('type', 'in', inv_type),
-                       ('state', 'not in', inv_state)],
+                 '&', ('fb_id', '=', fb_brw.id),
+                      '|', ('date_invoice', '<', fb_brw.date_from),
+                           ('date_invoice', '>', fb_brw.date_to),
+                 '&', '&', '&', ('date_invoice', '>=', fb_brw.date_from),
+                                ('date_invoice', '<=', fb_brw.date_to),
+                                ('type', 'in', inv_type),
+                                ('state', 'not in', inv_state)],
             order='date_invoice asc, nro_ctrl asc', context=context)
         return issue_inv_ids
 
@@ -803,10 +812,11 @@ class fiscal_book(osv.osv):
                     or ['in_invoice', 'in_refund']
         #~ pull wh iva line data
         awi_ids = awi_obj.search(cr, uid,
-                                 [('period_id', '=', fb_brw.period_id.id),
-                                 ('type', 'in', awil_type),
-                                 ('state', '=', 'done')],
-                                 context=context)
+                                 [('date_ret', '>=', fb_brw.date_from),
+                                  ('date_ret', '<=', fb_brw.date_to),
+                                  ('type', 'in', awil_type),
+                                  ('state', '=', 'done')],
+                                  context=context)
         awil_ids = awil_obj.search(
             cr, uid, [('retention_id', 'in', awi_ids)], context=context)
         return awil_ids or False

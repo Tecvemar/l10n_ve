@@ -119,7 +119,11 @@
                     <field name="name"/>
                     <field name="type" readonly="1" invisible="1"/>
                     <field name="article_number" on_change="onchange_field_clear_book()"/>
-                    <field name="period_id" on_change="onchange_field_clear_book()"/>
+                    <group colspan="2" col="6">
+                        <field name="period_id" on_change="onchange_field_clear_book()"/>
+                        <field name="date_from" required="1"/>
+                        <field name="date_to"  required="1"/>
+                    </group>
                     <field name="company_id" invisible="1"/>
                 </group>
                 <notebook colspan="8">
@@ -317,7 +321,11 @@
                 <group col="4" colspan="4">
                     <field name="name"/>
                     <field name="type" readonly="1" invisible="1"/>
-                    <field name="period_id" on_change="onchange_field_clear_book()"/>
+                    <group colspan="2" col="6">
+                        <field name="period_id" on_change="onchange_field_clear_book()"/>
+                        <field name="date_from" required="1"/>
+                        <field name="date_to" required="1"/>
+                    </group>
                     <field name="company_id" invisible="1"/>
                 </group>
                 <notebook colspan="8">
