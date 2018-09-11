@@ -210,8 +210,13 @@ class account_wh_iva(osv.osv):
         @param wh_iva_rate: iva rate
         @param offset: compensation
         """
-        if context is None: context = {}
-        return amount_ret >= amount * (wh_iva_rate - offset)/100.0 and amount_ret <= amount * (wh_iva_rate + offset)/100.0
+        context = context or {}
+        max_wh = amount * (wh_iva_rate - offset)/100.0
+        min_wh = amount * (wh_iva_rate + offset)/100.0
+        if abs(amount_ret - max_wh) < 0.01:
+            return True
+        else:
+            return amount_ret >= max_wh and amount_ret <= min_wh
 
     def check_wh_taxes(self, cr, uid, ids, context=None):
         """ Check that are valid and that amount retention is not greater than amount
