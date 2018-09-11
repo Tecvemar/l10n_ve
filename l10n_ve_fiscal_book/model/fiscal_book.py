@@ -313,10 +313,10 @@ class fiscal_book(osv.osv):
             states={'draft': [('readonly', False)]},
             help="Book's Fiscal Period. The periods listed are thouse how are"
             " regular periods, i.e. not opening/closing periods."),
-        'date_from': fields.date(
-            'Date from'),  # Set required in view
-        'date_to': fields.date(
-            'Date to'),  # Set required in view
+        'date_from': fields.date(  # Set required in view
+            'Date from', states={'draft': [('readonly', False)]}),
+        'date_to': fields.date(  # Set required in view
+            'Date to', states={'draft': [('readonly', False)]}),
         'state': fields.selection([('draft', 'Getting Ready'),
                                    ('confirmed', 'Approved by Manager'),
                                    ('done', 'Seniat Submitted'),
@@ -688,7 +688,7 @@ class fiscal_book(osv.osv):
     }
 
     _sql_constraints = [
-        ('period_type_company_uniq', 'unique (period_id,type,company_id)',
+        ('period_type_company_uniq', 'unique (period_id,type,company_id,date_from)',
             'The period and type combination must be unique!'),
     ]
 
