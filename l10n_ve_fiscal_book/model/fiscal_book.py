@@ -85,20 +85,20 @@ class fiscal_book(osv.osv):
                 'NO HAY DIRECCION FISCAL DEFINIDA'
         return res
 
-    def _get_month_year(self, cr, uid, ids, field_name, arg, context=None):
-        """ It returns an string with the information of the the year and month
-        of the fiscal book.
-        @param field_name: field [get_month_year]
-        """
-        context = context or {}
-        months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
-            "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
-        res = {}.fromkeys(ids, '')
-        for fb_brw in self.browse(cr, uid, ids, context=context):
-            month = months[time.strptime(fb_brw.period_id.date_start,"%Y-%m-%d")[1]-1]
-            year = time.strptime(fb_brw.period_id.date_start,"%Y-%m-%d")[0]
-            res[fb_brw.id] = "Correspodiente al Mes de " + str(month) + " del año " + str(year)
-        return res
+    # ~ def _get_month_year(self, cr, uid, ids, field_name, arg, context=None):
+        # ~ """ It returns an string with the information of the the year and month
+        # ~ of the fiscal book.
+        # ~ @param field_name: field [get_month_year]
+        # ~ """
+        # ~ context = context or {}
+        # ~ months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
+            # ~ "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+        # ~ res = {}.fromkeys(ids, '')
+        # ~ for fb_brw in self.browse(cr, uid, ids, context=context):
+            # ~ month = months[time.strptime(fb_brw.period_id.date_start,"%Y-%m-%d")[1]-1]
+            # ~ year = time.strptime(fb_brw.period_id.date_start,"%Y-%m-%d")[0]
+            # ~ res[fb_brw.id] = "Correspodiente al Mes de " + str(month) + " del año " + str(year)
+        # ~ return res
 
     def _get_total_with_iva_sum(self, cr, uid, ids, field_names, arg,
                                 context=None):
@@ -403,10 +403,10 @@ class fiscal_book(osv.osv):
             _get_partner_addr,
             type="text", method=True,
             help='Partner address printable format'),
-        'get_month_year': fields.function(
-            _get_month_year,
-            type="text", method=True,
-            help='Year and Month ot the Fiscal book period'),
+        # ~ 'get_month_year': fields.function(
+            # ~ _get_month_year,
+            # ~ type="text", method=True,
+            # ~ help='Year and Month ot the Fiscal book period'),
 
         #~ Totalization fields for all type of transactions
         'get_total_with_iva_sum': fields.function(
