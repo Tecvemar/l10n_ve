@@ -26,7 +26,7 @@
 from osv import osv, fields
 from tools.translate import _
 import decimal_precision as dp
-import time
+# ~ import time
 import logging
 logger = logging.getLogger('server')
 
@@ -313,10 +313,12 @@ class fiscal_book(osv.osv):
             states={'draft': [('readonly', False)]},
             help="Book's Fiscal Period. The periods listed are thouse how are"
             " regular periods, i.e. not opening/closing periods."),
-        'date_from': fields.date(  # Set required in view
-            'Date from', states={'draft': [('readonly', False)]}),
-        'date_to': fields.date(  # Set required in view
-            'Date to', states={'draft': [('readonly', False)]}),
+        'date_start': fields.date(  # Set required in view
+            'Date from', readonly=True,
+            states={'draft': [('readonly', False)]}),
+        'date_end': fields.date(  # Set required in view
+            'Date to', readonly=True,
+            states={'draft': [('readonly', False)]}),
         'state': fields.selection([('draft', 'Getting Ready'),
                                    ('confirmed', 'Approved by Manager'),
                                    ('done', 'Seniat Submitted'),
@@ -688,7 +690,7 @@ class fiscal_book(osv.osv):
     }
 
     _sql_constraints = [
-        ('period_type_company_uniq', 'unique (period_id,type,company_id,date_from)',
+        ('period_type_company_uniq', 'unique (period_id,type,company_id,date_start)',
             'The period and type combination must be unique!'),
     ]
 
@@ -716,8 +718,8 @@ class fiscal_book(osv.osv):
         inv_state = ['paid', 'open'] if fb_brw.type != 'sale' else ['paid', 'open', 'cancel']
         #~ pull invoice data
         inv_ids = inv_obj.search(cr, uid,
-                                 [('date_invoice', '>=', fb_brw.date_from),
-                                  ('date_invoice', '<=', fb_brw.date_to),
+                                 [('date_invoice', '>=', fb_brw.date_start),
+                                  ('date_invoice', '<=', fb_brw.date_end),
                                   ('company_id', '=', fb_brw.company_id.id),
                                   ('type', 'in', inv_type),
                                   ('state', 'in', inv_state)],
@@ -775,10 +777,10 @@ class fiscal_book(osv.osv):
             cr, uid,
             ['|',
                  '&', ('fb_id', '=', fb_brw.id),
-                      '|', ('date_invoice', '<', fb_brw.date_from),
-                           ('date_invoice', '>', fb_brw.date_to),
-                 '&', '&', '&', ('date_invoice', '>=', fb_brw.date_from),
-                                ('date_invoice', '<=', fb_brw.date_to),
+                      '|', ('date_invoice', '<', fb_brw.date_start),
+                           ('date_invoice', '>', fb_brw.date_end),
+                 '&', '&', '&', ('date_invoice', '>=', fb_brw.date_start),
+                                ('date_invoice', '<=', fb_brw.date_end),
                                 ('type', 'in', inv_type),
                                 ('state', 'not in', inv_state)],
             order='date_invoice asc, nro_ctrl asc', context=context)
@@ -812,8 +814,8 @@ class fiscal_book(osv.osv):
                     or ['in_invoice', 'in_refund']
         #~ pull wh iva line data
         awi_ids = awi_obj.search(cr, uid,
-                                 [('date_ret', '>=', fb_brw.date_from),
-                                  ('date_ret', '<=', fb_brw.date_to),
+                                 [('date_ret', '>=', fb_brw.date_start),
+                                  ('date_ret', '<=', fb_brw.date_end),
                                   ('type', 'in', awil_type),
                                   ('state', '=', 'done')],
                                   context=context)
