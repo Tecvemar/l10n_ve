@@ -152,8 +152,8 @@ class fiscal_book_wizard(osv.osv_memory):
         fiscal_book_o = fiscal_book_obj.browse(cr, uid,  fiscal_book_o[0])
         res = super(fiscal_book_wizard, self).default_get(cr, uid, fields, context=context)
         res.update({'type': fiscal_book_o.type})
-        res.update({'date_start': fiscal_book_o.date_from or ''})
-        res.update({'date_end': fiscal_book_o.date_to or ''})
+        res.update({'date_start': fiscal_book_o.date_start or ''})
+        res.update({'date_end': fiscal_book_o.date_end or ''})
         return res
 
     def check_report(self, cr, uid, ids, context=None):
@@ -187,7 +187,6 @@ class fiscal_book_wizard(osv.osv_memory):
         ], "Type", required=True,
         ),
     }
-
 
 
     _defaults = {
