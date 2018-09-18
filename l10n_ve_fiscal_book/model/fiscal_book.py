@@ -230,7 +230,7 @@ class fiscal_book(osv.osv):
                  }
         if not fb:
             return [total]
-        min_date = fb.period_id.date_start
+        min_date = fb.date_start
         for item in fb.fbl_ids:
             if item.emission_date < min_date:  # adjust
                 total['aju']['base'] += item.vat_general_base + \
@@ -267,7 +267,7 @@ class fiscal_book(osv.osv):
                  }
         if not fb:
             return [total]
-        min_date = fb.period_id.date_start
+        min_date = fb.date_start
         for item in fb.fbl_ids:
             if item.emission_date < min_date:  # adjust
                 total['aju']['tax'] += item.vat_general_tax + \
@@ -923,8 +923,8 @@ class fiscal_book(osv.osv):
             add_cf_ids = cf_obj.search(
                 cr, uid,
                 [('state','=', 'done'),
-                 ('date_liq','>=', fb_brw.period_id.date_start),
-                 ('date_liq','<=', fb_brw.period_id.date_stop)],
+                 ('date_liq','>=', fb_brw.date_start),
+                 ('date_liq','<=', fb_brw.date_stop)],
                 context=context)
             add_cf_ids and self.write(
                 cr, uid, fb_brw.id, {'cf_ids': [(4, cf) for cf in add_cf_ids]},
@@ -1034,10 +1034,10 @@ class fiscal_book(osv.osv):
             for iwdl_brw in iwdl_obj.browse(cr, uid, missing_iwdl_ids,
                                             context=context):
                 rp_brw =  rp_obj._find_accounting_partner(iwdl_brw.retention_id.partner_id)
-                void_form = __VOID_FORM__[2] if fb_brw.type == 'sale' and iwdl_brw.invoice_id.fb_id.id == fb_id else __VOID_FORM__[4]
+                void_form = __VOID_FORM__[2] if fb_brw.type == 'sale' and iwdl_brw.date_invoice >= fb_brw.date_start and iwdl_brw.date_invoice <= fb_brw.date_end else __VOID_FORM__[4]
                 doc_type = self.get_doc_type(cr, uid, iwdl_id=iwdl_brw.id,
                                              fb_id=fb_id, fb_browse=fb_brw, context=context)
-                if fb_brw.type == 'sale' and doc_type == 'AJST' and iwdl_brw.invoice_id.period_id.id == fb_brw.period_id.id:
+                if fb_brw.type == 'sale' and doc_type == 'AJST' and iwdl_brw.date_invoice >= fb_brw.date_start and iwdl_brw.date_invoice <= fb_brw.date_end:
                     doc_type = 'RET'
                     if fb_brw.type == 'sale' and 'refund' in iwdl_brw.invoice_id.type:
                         doc_type = 'RN/C'
@@ -1045,7 +1045,7 @@ class fiscal_book(osv.osv):
                     'void_form': void_form,
                     'iwdl_id': iwdl_brw.id,
                     'type': t_type,
-                    'accounting_date': iwdl_brw.date or False,
+                    'accounting_date': iwdl_brw.date_invoice or False,
                     'emission_date': iwdl_brw.date_ret or False,
                     'doc_type': doc_type,
                     'wh_number': iwdl_brw.retention_id.number or False,
@@ -1797,8 +1797,8 @@ class fiscal_book(osv.osv):
         void_form = __VOID_FORM__[1]
         if inv_brw.state == 'cancel':
             void_form = __VOID_FORM__[3]
-        if (fb_brw.type == 'sale' and inv_brw.date_invoice < fb_brw.period_id.date_start) or \
-                (fb_brw.type == 'purchase' and inv_brw.date_document < fb_brw.period_id.date_start):
+        if (fb_brw.type == 'sale' and inv_brw.date_invoice < fb_brw.date_start) or \
+                (fb_brw.type == 'purchase' and inv_brw.date_document < fb_brw.date_start):
             void_form = __VOID_FORM__[4]
         return void_form
 
