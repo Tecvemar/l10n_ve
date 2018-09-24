@@ -924,7 +924,7 @@ class fiscal_book(osv.osv):
                 cr, uid,
                 [('state','=', 'done'),
                  ('date_liq','>=', fb_brw.date_start),
-                 ('date_liq','<=', fb_brw.date_stop)],
+                 ('date_liq','<=', fb_brw.date_end)],
                 context=context)
             add_cf_ids and self.write(
                 cr, uid, fb_brw.id, {'cf_ids': [(4, cf) for cf in add_cf_ids]},
@@ -1045,7 +1045,7 @@ class fiscal_book(osv.osv):
                     'void_form': void_form,
                     'iwdl_id': iwdl_brw.id,
                     'type': t_type,
-                    'accounting_date': iwdl_brw.date_invoice or False,
+                    'accounting_date': iwdl_brw.date or False,
                     'emission_date': iwdl_brw.date_ret or False,
                     'doc_type': doc_type,
                     'wh_number': iwdl_brw.retention_id.number or False,
