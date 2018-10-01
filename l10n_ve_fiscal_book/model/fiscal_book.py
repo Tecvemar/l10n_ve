@@ -1034,10 +1034,10 @@ class fiscal_book(osv.osv):
             for iwdl_brw in iwdl_obj.browse(cr, uid, missing_iwdl_ids,
                                             context=context):
                 rp_brw =  rp_obj._find_accounting_partner(iwdl_brw.retention_id.partner_id)
-                void_form = __VOID_FORM__[2] if fb_brw.type == 'sale' and iwdl_brw.date_invoice >= fb_brw.date_start and iwdl_brw.date_invoice <= fb_brw.date_end else __VOID_FORM__[4]
+                void_form = __VOID_FORM__[2] if fb_brw.type == 'sale' and iwdl_brw.invoice_id.date_invoice >= fb_brw.date_start and iwdl_brw.invoice_id.date_invoice <= fb_brw.date_end else __VOID_FORM__[4]
                 doc_type = self.get_doc_type(cr, uid, iwdl_id=iwdl_brw.id,
                                              fb_id=fb_id, fb_browse=fb_brw, context=context)
-                if fb_brw.type == 'sale' and doc_type == 'AJST' and iwdl_brw.date_invoice >= fb_brw.date_start and iwdl_brw.date_invoice <= fb_brw.date_end:
+                if fb_brw.type == 'sale' and doc_type == 'AJST' and iwdl_brw.invoice_id.date_invoice >= fb_brw.date_start and iwdl_brw.invoice_id.date_invoice <= fb_brw.date_end:
                     doc_type = 'RET'
                     if fb_brw.type == 'sale' and 'refund' in iwdl_brw.invoice_id.type:
                         doc_type = 'RN/C'
