@@ -42,9 +42,9 @@ class account_invoice(osv.osv):
                                        help="Indicates if this invoice is in" \
                                        " a Fiscal Book which has being" \
                                        " already submitted to the statutory" \
-                                       " institute"),                                       
+                                       " institute"),
     }
-    
+
     def action_cancel(self, cr, uid, ids, context=None):
         """ Verify first in the invoice have a fiscal book associated and if
         the sate of the book is in cancel. """
@@ -57,6 +57,16 @@ class account_invoice(osv.osv):
                 _("You can't cancel an invoice that is loaded in a processed"
                   "Fiscal Book. You need to go to Fiscal Book and set the book"
                   " to Draft. Then you could be able to cancel the invoice."))
-        return True    
+        return True
+
+    def copy(self, cr, uid, id, default=None, context=None):
+        default = default or {}
+        default.update({
+            'fb_id': 0,
+            'issue_fb_id': 0,
+            'fb_submitted': False,
+            })
+        return super(account_invoice, self).\
+            copy(cr, uid, id, default, context=context)
 
 account_invoice()
