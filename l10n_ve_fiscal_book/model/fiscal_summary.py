@@ -142,7 +142,8 @@ class fiscal_summary(osv.osv):
         ids = isinstance(ids, (int, long)) and [ids] or ids
         res = []
         for item in self.browse(cr, uid, ids, context={}):
-            res.append((item.id, '%s' % (item.period_id.name)))
+            res.append(
+                (item.id, '%s - %s' % (item.date_start, item.date_end)))
         return res
 
     ##------------------------------------------------------- _internal methods
@@ -345,9 +346,9 @@ class fiscal_summary(osv.osv):
 
     ##--------------------------------------------------------- function fields
 
-    _rec_name = 'period_id, date_end'
+    _rec_name = 'date_start, date_end'
 
-    _order = 'period_id desc'
+    _order = 'date_end desc'
 
     _columns = {
         'company_id': fields.many2one(
@@ -406,7 +407,7 @@ class fiscal_summary(osv.osv):
         }
 
     _sql_constraints = [
-        # ~ ('period_uniq', 'UNIQUE(period_id)', 'The period must be unique!'),
+        ('period_uniq', 'UNIQUE(date_end)', 'The period must be unique!'),
         ]
 
     ##-------------------------------------------------------------------------
@@ -483,7 +484,7 @@ class fiscal_summary(osv.osv):
 
     ##------------------------------------------------------------ on_change...
 
-    def on_change_period_id(self, cr, uid, ids, date_start,date_end):
+    def on_change_period_id(self, cr, uid, ids, date_start, date_end):
         res = {'fb_purchase_id': 0, 'fb_sale_id': 0}
         if date_start and date_end:
             res.update(self._get_fiscal_book_ids(

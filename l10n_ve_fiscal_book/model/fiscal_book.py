@@ -299,7 +299,7 @@ class fiscal_book(osv.osv):
 
     _description = "Venezuela's Sale & Purchase Fiscal Books"
     _name = 'fiscal.book'
-    _order = 'period_id desc'
+    _order = 'date_end desc'
     _columns = {
         'name': fields.char('Description', size=256, required=True,
             readonly=True,
@@ -690,8 +690,9 @@ class fiscal_book(osv.osv):
     }
 
     _sql_constraints = [
-        ('period_type_company_uniq', 'unique (period_id,type,company_id,date_start)',
-            'The period and type combination must be unique!'),
+        ('period_type_company_uniq',
+         'unique (period_id,type,company_id,date_start)',
+         'The period and type combination must be unique!'),
     ]
 
     #~ action methods
