@@ -724,6 +724,17 @@ class fiscal_book(osv.osv):
         taxes. """
         context = context or {}
         for fb_brw in self.browse(cr, uid, ids, context=context):
+            if fb_brw.date_start > fb_brw.date_end:
+                raise osv.except_osv(
+                    _('Error!'),
+                    _('Date Start must be smaller than Date End'))
+            if fb_brw.date_start < fb_brw.period_id.date_start or \
+                fb_brw.date_end > fb_brw.period_id.date_stop:
+                raise osv.except_osv(
+                    _('Error!'),
+                    _('The date must be included in the selected period: \n'
+                    ' \n \t \t   %s - %s') %
+                    (fb_brw.period_id.date_start, fb_brw.period_id.date_stop))
             self.clear_book(cr, uid, [fb_brw.id], context=context)
             self.update_book_invoices(cr, uid, fb_brw.id, context=context)
             self.update_book_issue_invoices(cr, uid, fb_brw.id, context=context)
