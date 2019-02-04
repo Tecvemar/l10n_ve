@@ -75,12 +75,12 @@ class fiscal_book(osv.osv):
         res = {}.fromkeys(ids, 'NO HAY DIRECCION FISCAL DEFINIDA')
         #~ TODO: ASK: what company, fisal.book.company_id?
         for item in self.browse(cr, uid, ids, context={}):
-            address = item.company_id.partner_id.address_id
-            addr = [addr for addr in address if addr.type == 'invoice']
+            address = item.company_id.partner_id.address
+            addr = [addr for addr in address if addr.type == 'invoice'][0]
             addr_str = ' '.join((
-                addr.street, addr.street2, addr.zip, addr.city,
-                addr.country_id and addr.country_id.name, ', TELF.:',
-                addr.phone))
+                addr.street or '', addr.street2 or '', addr.zip or '', addr.city or '',
+                addr.country_id and addr.country_id.name or '', ', TELF.:',
+                addr.phone or ''))
             res[item.id] = ' '.join(addr_str) or \
                 'NO HAY DIRECCION FISCAL DEFINIDA'
         return res
