@@ -254,7 +254,7 @@
             <field name="type">ir.actions.act_window</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="domain">[('type','=','out_invoice')]</field>
+            <field name="domain">[('type','in', ('out_invoice','out_refund'))]</field>
             <field name="context">{'type':'out_invoice'}</field>
             <field name="search_view_id" ref="view_wh_iva_filter"/>
             <field name="help">With Customer Withholding Vat you can create and manage document withholding issued to your customers. OpenERP can also generate document withholding automatically from invoices. For retention must add the invoices, process them and then validate the document.</field>

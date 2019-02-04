@@ -202,7 +202,7 @@ class account_wh_iva(osv.osv):
         #~ return True
 
 
-    def _get_valid_wh(self, cr, uid, amount_ret, amount, wh_iva_rate, offset=0.5,  context=None):
+    def _get_valid_wh(self, cr, uid, amount_ret, amount, wh_iva_rate, offset=0.9,  context=None):
         """ This method can be override in a way that
         you can afford your own value for the offset
         @param amount_ret: withholding amount

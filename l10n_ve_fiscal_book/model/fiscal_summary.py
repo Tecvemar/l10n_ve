@@ -125,45 +125,56 @@ class fiscal_summary(osv.osv):
         data = super(fiscal_summary, self).default_get(
             cr, uid, fields, context)
         if data.get('date'):
-            obj_per = self.pool.get('account.period')
+            # ~ obj_per = self.pool.get('account.period')
             dt = datetime.strptime(data['date'], '%Y-%m-%d')
-            period_date = (dt - relativedelta(months=1)).strftime('%Y-%m-%d')
-            period_id = obj_per.find(cr, uid, period_date)[0]
-            data.update({'period_id': period_id})
-            data.update(self._get_fiscal_book_ids(cr, uid, period_id))
+            date_from = (dt - relativedelta(weeks=1))
+            date_start = date_from.strftime('%Y-%m-%d')
+            date_end = (
+                date_from + relativedelta(days=6)).strftime('%Y-%m-%d')
+
+            data.update({'date_start': date_start,
+                         'date_end': date_end})
+            data.update(
+                self._get_fiscal_book_ids(cr, uid, date_start, date_end))
         return data
 
     def name_get(self, cr, uid, ids, context):
         ids = isinstance(ids, (int, long)) and [ids] or ids
         res = []
         for item in self.browse(cr, uid, ids, context={}):
-            res.append((item.id, '%s' % (item.period_id.name)))
+            res.append(
+                (item.id, '%s - %s' % (item.date_start, item.date_end)))
         return res
 
     ##------------------------------------------------------- _internal methods
 
-    def _get_fiscal_book_ids(self, cr, uid, period_id):
+    def _get_fiscal_book_ids(self, cr, uid, date_start, date_end):
         res = {}
-        if not period_id:
+        if not date_start or not date_end:
             return res
         obj_fb = self.pool.get('fiscal.book')
-        obj_per = self.pool.get('account.period')
-        fb_ids = obj_fb.search(cr, uid, [('period_id', '=', period_id)])
-        per_brw = obj_per.browse(cr, uid, period_id, context=None)
-        dt = datetime.strptime(per_brw.date_start, '%Y-%m-%d')
+        # ~ obj_per = self.pool.get('account.period')
+        # ~ per_brw = obj_per.browse(cr, uid, period_id, context=None)
+        dt = datetime.strptime(date_start, '%Y-%m-%d')
         prior_date = (dt - timedelta(days=1)).strftime('%Y-%m-%d')
-        prior_period_id = obj_per.find(cr, uid, prior_date)[0]
-        if prior_period_id:
+        fb_ids = False
+        # ~ prior_period_id = obj_per.find(cr, uid, prior_date)[0]
+        if prior_date:
             prior_summary_id = self.search(
-                cr, uid, [('period_id', '=', prior_period_id)])
+                cr, uid, [('date_end', '=', prior_date)])
             if prior_summary_id:
                 res.update({'prior_summary_id': prior_summary_id[0]})
-        if fb_ids and len(fb_ids) == 2:
-            for fb in obj_fb.browse(cr, uid, fb_ids, context=None):
-                if fb.type == 'purchase':
-                    res.update({'fb_purchase_id': fb.id})
-                elif fb.type == 'sale':
-                    res.update({'fb_sale_id': fb.id})
+                prior_summary = self.browse(
+                    cr, uid, prior_summary_id[0], context=None)
+                fb_ids = obj_fb.search(
+                    cr, uid, [('date_start', '=', prior_summary.date_start),
+                              ('date_end', '=', prior_summary.date_end)])
+            if fb_ids and len(fb_ids) == 2:
+                for fb in obj_fb.browse(cr, uid, fb_ids, context=None):
+                    if fb.type == 'purchase':
+                        res.update({'fb_purchase_id': fb.id})
+                    elif fb.type == 'sale':
+                        res.update({'fb_sale_id': fb.id})
         return res
 
     def _clear_lines(self, cr, uid, ids, context):
@@ -335,9 +346,9 @@ class fiscal_summary(osv.osv):
 
     ##--------------------------------------------------------- function fields
 
-    _rec_name = 'period_id'
+    _rec_name = 'date_start, date_end'
 
-    _order = 'period_id desc'
+    _order = 'date_end desc'
 
     _columns = {
         'company_id': fields.many2one(
@@ -352,8 +363,14 @@ class fiscal_summary(osv.osv):
             states={'draft': [('readonly', False)]}, select=True,
             help="Date when document was declared to SENIAT"),
         'period_id': fields.many2one(
-            'account.period', 'Period', required=True, readonly=True,
+            'account.period', 'Period', required=False, readonly=True,
             states={'draft': [('readonly', False)]}, ondelete='restrict'),
+        'date_start': fields.date(  # Set required in view
+            'Date from', readonly=True,
+            states={'draft': [('readonly', False)]}),
+        'date_end': fields.date(  # Set required in view
+            'Date to', readonly=True,
+            states={'draft': [('readonly', False)]}),
         'fb_purchase_id': fields.many2one(
             'fiscal.book', 'Fiscal Purchase Book', readonly=True,
             required=False, help='Show Fiscal Purchase Book',
@@ -390,7 +407,7 @@ class fiscal_summary(osv.osv):
         }
 
     _sql_constraints = [
-        ('period_uniq', 'UNIQUE(period_id)', 'The period must be unique!'),
+        ('period_uniq', 'UNIQUE(date_end)', 'The period must be unique!'),
         ]
 
     ##-------------------------------------------------------------------------
@@ -467,26 +484,26 @@ class fiscal_summary(osv.osv):
 
     ##------------------------------------------------------------ on_change...
 
-    def on_change_period_id(self, cr, uid, ids, period_id):
+    def on_change_period_id(self, cr, uid, ids, date_start, date_end):
         res = {'fb_purchase_id': 0, 'fb_sale_id': 0}
-        if not period_id:
-            return res
-        res.update(self._get_fiscal_book_ids(cr, uid, period_id))
+        if date_start and date_end:
+            res.update(self._get_fiscal_book_ids(
+                cr, uid, date_start, date_end))
         return {'value': res}
 
     ##----------------------------------------------------- create write unlink
 
     def create(self, cr, uid, vals, context=None):
-        if vals.get('period_id'):
-            vals.update(self._get_fiscal_book_ids(cr, uid, vals['period_id']))
+        # ~ if vals.get('period_id'):
+            # ~ vals.update(self._get_fiscal_book_ids(cr, uid, vals['period_id']))
         res = super(fiscal_summary, self).create(cr, uid, vals, context)
         return res
 
     def write(self, cr, uid, ids, vals, context=None):
-        if vals.get('period_id'):
-            vals.update(
-                self._get_fiscal_book_ids(cr, uid, vals['period_id']) or
-                {'fb_purchase_id': 0, 'fb_sale_id': 0})
+        # ~ if vals.get('period_id'):
+            # ~ vals.update(
+                # ~ self._get_fiscal_book_ids(cr, uid, vals['period_id']) or
+                # ~ {'fb_purchase_id': 0, 'fb_sale_id': 0})
         res = super(fiscal_summary, self).write(cr, uid, ids, vals, context)
         return res
 
@@ -529,6 +546,7 @@ class fiscal_summary(osv.osv):
 
     def test_cancel(self, cr, uid, ids, *args):
         return True
+
 
 fiscal_summary()
 
@@ -606,6 +624,8 @@ class fiscal_summary_lines(osv.osv):
 
     ##----------------------------------------------------- Workflow
 
+
 fiscal_summary_lines()
+
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

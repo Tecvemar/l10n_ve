@@ -30,6 +30,8 @@
             <field name="arch" type="xml">
                 <tree string="Fiscal Book Summary" colors="red:state == 'draft';gray:state == 'cancel'">
                     <field name="period_id"/>
+                    <field name="date_start"/>
+                    <field name="date_end"/>
                     <field name="date"/>
                     <field name="number"/>
                     <field name="certificate"/>
@@ -48,12 +50,16 @@
             <field name="arch" type="xml">
                 <form string="Fiscal Book Summary">
                     <group col="8" colspan="4">
-                        <field name="company_id" colspan="4"/>
-                        <field name="period_id" on_change="on_change_period_id(period_id)"/>
+                        <field name="company_id" colspan="2"/>
+                        <field name="period_id" on_change="on_change_period_id(date_start,date_end)"/>
+                        <field name="date_start" required="1" on_change="on_change_period_id(date_start,date_end)"/>
+                        <field name="date_end" required="1" on_change="on_change_period_id(date_start,date_end)"/>
+                    </group>
+                    <group col="6" colspan="4">
+                        <field name="number"/>
+                        <field name="certificate"/>
                         <field name="date"/>
                     </group>
-                    <field name="number"/>
-                    <field name="certificate"/>
                     <field name="fb_purchase_id" context="{'type': 'purchase', 'form_view_ref':'l10n_ve_fiscal_book.view_fiscal_purchase_book_form'}" domain="[('type','=','purchase')]"/>
                     <field name="fb_sale_id" context="{'type': 'sale', 'form_view_ref':'l10n_ve_fiscal_book.view_fiscal_sale_book_form'}" domain="[('type','=','sale')]"/>
                     <notebook colspan="4">

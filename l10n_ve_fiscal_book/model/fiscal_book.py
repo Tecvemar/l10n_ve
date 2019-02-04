@@ -26,7 +26,7 @@
 from osv import osv, fields
 from tools.translate import _
 import decimal_precision as dp
-import time
+# ~ import time
 import logging
 logger = logging.getLogger('server')
 
@@ -75,30 +75,30 @@ class fiscal_book(osv.osv):
         res = {}.fromkeys(ids, 'NO HAY DIRECCION FISCAL DEFINIDA')
         #~ TODO: ASK: what company, fisal.book.company_id?
         for item in self.browse(cr, uid, ids, context={}):
-            address = item.company_id.partner_id.address_id
-            addr = [addr for addr in address if addr.type == 'invoice']
+            address = item.company_id.partner_id.address
+            addr = [addr for addr in address if addr.type == 'invoice'][0]
             addr_str = ' '.join((
-                addr.street, addr.street2, addr.zip, addr.city,
-                addr.country_id and addr.country_id.name, ', TELF.:',
-                addr.phone))
+                addr.street or '', addr.street2 or '', addr.zip or '', addr.city or '',
+                addr.country_id and addr.country_id.name or '', ', TELF.:',
+                addr.phone or ''))
             res[item.id] = ' '.join(addr_str) or \
                 'NO HAY DIRECCION FISCAL DEFINIDA'
         return res
 
-    def _get_month_year(self, cr, uid, ids, field_name, arg, context=None):
-        """ It returns an string with the information of the the year and month
-        of the fiscal book.
-        @param field_name: field [get_month_year]
-        """
-        context = context or {}
-        months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
-            "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
-        res = {}.fromkeys(ids, '')
-        for fb_brw in self.browse(cr, uid, ids, context=context):
-            month = months[time.strptime(fb_brw.period_id.date_start,"%Y-%m-%d")[1]-1]
-            year = time.strptime(fb_brw.period_id.date_start,"%Y-%m-%d")[0]
-            res[fb_brw.id] = "Correspodiente al Mes de " + str(month) + " del año " + str(year)
-        return res
+    # ~ def _get_month_year(self, cr, uid, ids, field_name, arg, context=None):
+        # ~ """ It returns an string with the information of the the year and month
+        # ~ of the fiscal book.
+        # ~ @param field_name: field [get_month_year]
+        # ~ """
+        # ~ context = context or {}
+        # ~ months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio",
+            # ~ "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+        # ~ res = {}.fromkeys(ids, '')
+        # ~ for fb_brw in self.browse(cr, uid, ids, context=context):
+            # ~ month = months[time.strptime(fb_brw.period_id.date_start,"%Y-%m-%d")[1]-1]
+            # ~ year = time.strptime(fb_brw.period_id.date_start,"%Y-%m-%d")[0]
+            # ~ res[fb_brw.id] = "Correspodiente al Mes de " + str(month) + " del año " + str(year)
+        # ~ return res
 
     def _get_total_with_iva_sum(self, cr, uid, ids, field_names, arg,
                                 context=None):
@@ -230,7 +230,7 @@ class fiscal_book(osv.osv):
                  }
         if not fb:
             return [total]
-        min_date = fb.period_id.date_start
+        min_date = fb.date_start
         for item in fb.fbl_ids:
             if item.emission_date < min_date:  # adjust
                 total['aju']['base'] += item.vat_general_base + \
@@ -267,7 +267,7 @@ class fiscal_book(osv.osv):
                  }
         if not fb:
             return [total]
-        min_date = fb.period_id.date_start
+        min_date = fb.date_start
         for item in fb.fbl_ids:
             if item.emission_date < min_date:  # adjust
                 total['aju']['tax'] += item.vat_general_tax + \
@@ -299,7 +299,7 @@ class fiscal_book(osv.osv):
 
     _description = "Venezuela's Sale & Purchase Fiscal Books"
     _name = 'fiscal.book'
-    _order = 'period_id desc'
+    _order = 'date_end desc'
     _columns = {
         'name': fields.char('Description', size=256, required=True,
             readonly=True,
@@ -313,6 +313,12 @@ class fiscal_book(osv.osv):
             states={'draft': [('readonly', False)]},
             help="Book's Fiscal Period. The periods listed are thouse how are"
             " regular periods, i.e. not opening/closing periods."),
+        'date_start': fields.date(  # Set required in view
+            'Date from', readonly=True,
+            states={'draft': [('readonly', False)]}),
+        'date_end': fields.date(  # Set required in view
+            'Date to', readonly=True,
+            states={'draft': [('readonly', False)]}),
         'state': fields.selection([('draft', 'Getting Ready'),
                                    ('confirmed', 'Approved by Manager'),
                                    ('done', 'Seniat Submitted'),
@@ -399,10 +405,10 @@ class fiscal_book(osv.osv):
             _get_partner_addr,
             type="text", method=True,
             help='Partner address printable format'),
-        'get_month_year': fields.function(
-            _get_month_year,
-            type="text", method=True,
-            help='Year and Month ot the Fiscal book period'),
+        # ~ 'get_month_year': fields.function(
+            # ~ _get_month_year,
+            # ~ type="text", method=True,
+            # ~ help='Year and Month ot the Fiscal book period'),
 
         #~ Totalization fields for all type of transactions
         'get_total_with_iva_sum': fields.function(
@@ -684,8 +690,9 @@ class fiscal_book(osv.osv):
     }
 
     _sql_constraints = [
-        ('period_type_company_uniq', 'unique (period_id,type,company_id)',
-            'The period and type combination must be unique!'),
+        ('period_type_company_uniq',
+         'unique (period_id,type,company_id,date_start)',
+         'The period and type combination must be unique!'),
     ]
 
     #~ action methods
@@ -712,7 +719,8 @@ class fiscal_book(osv.osv):
         inv_state = ['paid', 'open'] if fb_brw.type != 'sale' else ['paid', 'open', 'cancel']
         #~ pull invoice data
         inv_ids = inv_obj.search(cr, uid,
-                                 [('period_id', '=', fb_brw.period_id.id),
+                                 [('date_invoice', '>=', fb_brw.date_start),
+                                  ('date_invoice', '<=', fb_brw.date_end),
                                   ('company_id', '=', fb_brw.company_id.id),
                                   ('type', 'in', inv_type),
                                   ('state', 'in', inv_state)],
@@ -769,9 +777,13 @@ class fiscal_book(osv.osv):
         issue_inv_ids = inv_obj.search(
             cr, uid,
             ['|',
-             '&', ('fb_id', '=', fb_brw.id), ('period_id', '!=', fb_brw.period_id.id),
-             '&', '&', ('period_id', '=', fb_brw.period_id.id), ('type', 'in', inv_type),
-                       ('state', 'not in', inv_state)],
+                 '&', ('fb_id', '=', fb_brw.id),
+                      '|', ('date_invoice', '<', fb_brw.date_start),
+                           ('date_invoice', '>', fb_brw.date_end),
+                 '&', '&', '&', ('date_invoice', '>=', fb_brw.date_start),
+                                ('date_invoice', '<=', fb_brw.date_end),
+                                ('type', 'in', inv_type),
+                                ('state', 'not in', inv_state)],
             order='date_invoice asc, nro_ctrl asc', context=context)
         return issue_inv_ids
 
@@ -803,10 +815,11 @@ class fiscal_book(osv.osv):
                     or ['in_invoice', 'in_refund']
         #~ pull wh iva line data
         awi_ids = awi_obj.search(cr, uid,
-                                 [('period_id', '=', fb_brw.period_id.id),
-                                 ('type', 'in', awil_type),
-                                 ('state', '=', 'done')],
-                                 context=context)
+                                 [('date_ret', '>=', fb_brw.date_start),
+                                  ('date_ret', '<=', fb_brw.date_end),
+                                  ('type', 'in', awil_type),
+                                  ('state', '=', 'done')],
+                                  context=context)
         awil_ids = awil_obj.search(
             cr, uid, [('retention_id', 'in', awi_ids)], context=context)
         return awil_ids or False
@@ -911,8 +924,8 @@ class fiscal_book(osv.osv):
             add_cf_ids = cf_obj.search(
                 cr, uid,
                 [('state','=', 'done'),
-                 ('date_liq','>=', fb_brw.period_id.date_start),
-                 ('date_liq','<=', fb_brw.period_id.date_stop)],
+                 ('date_liq','>=', fb_brw.date_start),
+                 ('date_liq','<=', fb_brw.date_end)],
                 context=context)
             add_cf_ids and self.write(
                 cr, uid, fb_brw.id, {'cf_ids': [(4, cf) for cf in add_cf_ids]},
@@ -1022,10 +1035,10 @@ class fiscal_book(osv.osv):
             for iwdl_brw in iwdl_obj.browse(cr, uid, missing_iwdl_ids,
                                             context=context):
                 rp_brw =  rp_obj._find_accounting_partner(iwdl_brw.retention_id.partner_id)
-                void_form = __VOID_FORM__[2] if fb_brw.type == 'sale' and iwdl_brw.invoice_id.fb_id.id == fb_id else __VOID_FORM__[4]
+                void_form = __VOID_FORM__[2] if fb_brw.type == 'sale' and iwdl_brw.invoice_id.date_invoice >= fb_brw.date_start and iwdl_brw.invoice_id.date_invoice <= fb_brw.date_end else __VOID_FORM__[4]
                 doc_type = self.get_doc_type(cr, uid, iwdl_id=iwdl_brw.id,
                                              fb_id=fb_id, fb_browse=fb_brw, context=context)
-                if fb_brw.type == 'sale' and doc_type == 'AJST' and iwdl_brw.invoice_id.period_id.id == fb_brw.period_id.id:
+                if fb_brw.type == 'sale' and doc_type == 'AJST' and iwdl_brw.invoice_id.date_invoice >= fb_brw.date_start and iwdl_brw.invoice_id.date_invoice <= fb_brw.date_end:
                     doc_type = 'RET'
                     if fb_brw.type == 'sale' and 'refund' in iwdl_brw.invoice_id.type:
                         doc_type = 'RN/C'
@@ -1785,8 +1798,8 @@ class fiscal_book(osv.osv):
         void_form = __VOID_FORM__[1]
         if inv_brw.state == 'cancel':
             void_form = __VOID_FORM__[3]
-        if (fb_brw.type == 'sale' and inv_brw.date_invoice < fb_brw.period_id.date_start) or \
-                (fb_brw.type == 'purchase' and inv_brw.date_document < fb_brw.period_id.date_start):
+        if (fb_brw.type == 'sale' and inv_brw.date_invoice < fb_brw.date_start) or \
+                (fb_brw.type == 'purchase' and inv_brw.date_document < fb_brw.date_start):
             void_form = __VOID_FORM__[4]
         return void_form
 
