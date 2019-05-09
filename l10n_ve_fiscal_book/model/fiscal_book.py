@@ -691,7 +691,7 @@ class fiscal_book(osv.osv):
 
     _sql_constraints = [
         ('period_type_company_uniq',
-         'unique (period_id,type,company_id,date_start)',
+         'unique (period_id,type,company_id,date_start,date_end)',
          'The period and type combination must be unique!'),
     ]
 
