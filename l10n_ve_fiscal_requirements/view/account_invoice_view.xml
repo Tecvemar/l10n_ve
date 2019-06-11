@@ -13,7 +13,7 @@
             <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='date_invoice']" position="replace">
-                    <field name="date_invoice"/>
+                    <field name="date_invoice" attrs="{'readonly':[('type','=', 'out_invoice')]}"/>
                     <field name="date_document" invisible="1"/>
                     <newline/>
                 </xpath>
